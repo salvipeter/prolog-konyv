@@ -1,0 +1,104 @@
+\documentclass[a5paper]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage{t1enc}
+\def\magyarOptions{defaults=hu-min}
+\usepackage[magyar]{babel}
+
+\usepackage{imakeidx}
+\usepackage{pdfpages}
+
+\makeindex[intoc]
+
+\begin{document}
+
+\frontmatter
+\pagenumbering{roman}
+
+% Cover page
+\includepdf{images/cover.pdf}
+
+% Inside cover
+\thispagestyle{empty}
+\newpage
+
+% Flyleaf
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{2cm}
+{\large OLDD MEG PROLOGBAN!}
+\end{titlepage}
+
+% Inside cover
+\thispagestyle{empty}
+\newpage
+
+% Title page
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\Large OLDD MEG PROLOGBAN!}\\
+\vspace{8cm}
+{\large Salvi Péter}\\
+\vspace{1em}
+2022
+\end{titlepage}
+
+% Kolofon
+\thispagestyle{empty}
+\begin{center}
+  \small
+  Salvi Péter: Oldd meg Prologban!\\
+  Budapest, 2022\\
+  \bigskip
+  A könyv a Creative Commons \emph{Share Alike} licencnek megfelelően
+  szabadon terjeszthető.
+\end{center}
+\vspace*{\fill}
+{\footnotesize Ez a könyv a \LaTeX\ rendszer segítségével készült.
+  A borítón egy Lindenmayer-rendszer, az ún.~\emph{sárkány görbe} látható.
+}
+
+% Ajanlas
+\clearpage
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{\fill}
+  {\Large\emph{Zsófinak és Julinak}}
+  \vspace*{\fill}
+\end{center}
+\clearpage
+
+\thispagestyle{empty}
+\newpage
+
+\addtocounter{page}{2}
+
+\tableofcontents
+
+\chapter{Előszó}
+\include{eloszo}
+
+\mainmatter
+\pagenumbering{arabic}
+
+\include{lesson1}
+\include{lesson2}
+\include{lesson3}
+\include{lesson4}
+\include{lesson5}
+\include{lesson6}
+\include{lesson7}
+
+\backmatter
+
+\chapter{Könyvajánló}
+\include{konyvajanlo}
+
+\chapter{Feladatok megoldásai}
+\include{megoldasok}
+
+\printindex
+
+\end{document}
