@@ -1,14 +1,47 @@
 \documentclass[a5paper]{book}
 
+\setlength\marginparwidth{30pt}
+
 \usepackage[utf8]{inputenc}
 \usepackage{t1enc}
 \def\magyarOptions{defaults=hu-min}
 \usepackage[magyar]{babel}
 
+\usepackage{adjustbox}
+\usepackage{amsmath}
+\usepackage{fancyvrb}
 \usepackage{imakeidx}
 \usepackage{pdfpages}
+\usepackage{tcolorbox}
+
+% Layout for debugging
+%\usepackage{showframe}
 
 \makeindex[intoc]
+
+% Definitions
+\newenvironment{prolog}{
+  \VerbatimEnvironment
+  \par\vspace{5pt}
+  \begin{adjustbox}{minipage=\textwidth-10pt,padding=5pt,bgcolor=black!5}
+    \begin{BVerbatim}
+  }{
+    \end{BVerbatim}
+  \end{adjustbox}
+  \par\vspace{5pt}\noindent
+}
+\newcommand{\pr}[1]{{\tt #1}}
+\newcommand{\name}[1]{{\sc #1}}
+\newtheorem{problem}{Feladat}
+\newenvironment{infobox}[1]{
+  \begin{tcolorbox}[center,
+                    float,
+                    fonttitle=\sffamily\bfseries,
+                    title={\center Kitérő: \emph{#1}},
+                    width=.75\linewidth]
+  }{
+  \end{tcolorbox}
+}
 
 \begin{document}
 
@@ -56,7 +89,7 @@
   szabadon terjeszthető.
 \end{center}
 \vspace*{\fill}
-{\footnotesize Ez a könyv a \LaTeX\ rendszer segítségével készült.
+{\footnotesize Ez a könyv a \LaTeX\ rendszer segítségével készült.\\
   A borítón egy Lindenmayer-rendszer, az ún.~\emph{sárkány görbe} látható.
 }
 
@@ -77,7 +110,6 @@
 
 \tableofcontents
 
-\chapter{Előszó}
 \include{eloszo}
 
 \mainmatter
