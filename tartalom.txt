@@ -2,15 +2,7 @@
 
 Oldd meg Prologban!
 
-* Bevezető
-- kiknek szól (mindenkinek, de ~10+ évesek)
-- mit nyújt (nincs web/GUI programozás / látványos játékok, hanem feladatmegoldás => projektek)
-- miért Prolog (nyelvfüggetlen, kevés szintaxis, kevés ismerettel érdekes feladatok)
-- leckék felépítése (részekbe szervezés, projektek)
-- Prolog fordítók (ISO), alapvető használat
-- köszönetnyilvánítás (Csilla)
 * Leckék
-- a "megjegyzések"-ben levő dolgok "column"-okba kerülnek
 - sokkal több (és más) feladat (minden projekthez is)
 - mélyvíz ISO-sítva
 * Könyvajánló

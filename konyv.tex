@@ -6,6 +6,7 @@
 \usepackage{t1enc}
 \def\magyarOptions{defaults=hu-min}
 \usepackage[magyar]{babel}
+\addto\captionsmagyar{\renewcommand{\chaptername}{lecke}}
 
 \usepackage{adjustbox}
 \usepackage{amsmath}
@@ -33,12 +34,12 @@
 \newcommand{\pr}[1]{{\tt #1}}
 \newcommand{\name}[1]{{\sc #1}}
 \newtheorem{problem}{Feladat}
-\newenvironment{infobox}[1]{
+\newenvironment{infobox}[2]{
   \begin{tcolorbox}[center,
                     float,
                     fonttitle=\sffamily\bfseries,
-                    title={\center Kitérő: \emph{#1}},
-                    width=.75\linewidth]
+                    title={\center Kitérő: \emph{#2}},
+                    width=#1\linewidth]
   }{
   \end{tcolorbox}
 }

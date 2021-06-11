@@ -1,3 +1,82 @@
 \chapter{Előszó}
-Blabla
-\name{SWI-Prolog} és \name{XSB} és \name{GNU Prolog}
+Ez a könyv elsősorban azoknak szól, akik még egyáltalán nem tudnak
+programozni, de szeretnék megismerni a számítógépes problémamegoldás
+alapjait. A ,,programozás'' ma már egy rendkívül szerteágazó
+gyűjtőfogalommá vált, melynek egy-egy területe magában egy-egy szakmát
+képvisel. Itt nem lesz szó webfejlesztésről, látványos játékokról vagy
+neurális hálókról: kizárólag a problémamegoldásra fogunk koncentrálni,
+ami viszont -- az én véleményem szerint -- a programozás
+legizgalmasabb válfaja.
+
+Ehhez a Prologot fogjuk használni. Ez az 50 éves múltra visszatekintő
+programozási nyelv sokáig állt a mesterséges intelligencia kutatás
+középpontjában, és bár az iparban nem hódított teret, az informatika
+oktatásában továbbra is jelentős szerepe van. Ez nem véletlen: a
+Prolog különösen alkalmas tanításra, ugyanis egészen minimális
+ismeretekkel is már érdekes feladatok megoldását teszi lehetővé. Ezt
+bizonyítják az egyes leckéket lezáró \emph{projektek} is, amelyekben
+különböző, kicsit nagyobb lélegzetvételű problémákat vizsgálunk majd
+meg.
+
+\section*{Hogyan használjuk a könyvet?}
+A leckékben szereplő példákat érdemes a számítógépen kipróbálni, és
+kísérletezgetni velük, átírni ezt--azt, és megvizsgálni, hogy mi
+történik. Az efféle játék során mélyül el igazán a tudás; és ezt
+segítik a feladatok is, melyeknek megoldása a könyv végén található.
+
+Mindehhez természetesen szükség van egy Prolog fordítóra. Ezekből sok
+létezik, és mindegyik meglehetősen különböző. A legtöbb azonban
+kompatibilis az 1995-ös ISO szabvánnyal, és ez a könyv csak ezt
+feltételezi, illetve még annyit, hogy tudja kezelni a magyar ábécé
+betűit. Az ingyenesen letölthető, nyílt forráskódú rendszerek közül
+ilyen pl.~az \name{SWI-Prolog} és az~\name{XSB}, illetve a
+\name{GNU Prolog} programnak is létezik Unicode-kom\-pa\-ti\-bi\-lis
+változata, ami elfogadja az ékezetes karaktereket.
+
+A problémamegoldás Prologban mindig két részből áll:
+\begin{enumerate}
+\item Egy -- általában {\tt .pl} kiterjesztésű -- fájlban megadunk egy
+  szabályrendszert (a program \emph{forráskódját}). Ennek megírásához
+  tetszőleges szövegszerkesztőt használhatunk.\index{forráskód}
+\item Ezzel kapcsolatban a programnak felteszünk kérdéseket.
+\end{enumerate}
+A legtöbb Prolog rendszer indításkor mindössze egy kérdőjel kiírásával
+fogad minket; ezzel jelzi, hogy várja a kérdést:
+\begin{prolog}
+?-
+\end{prolog}  
+Az első feladatunk, hogy betöltsük az általunk írt programot. Ezt
+általában a \pr{consult} paranccsal tehetjük meg, például:\index{{\tt consult}}
+\begin{prolog}
+?- consult('/home/salvi/szabályok.pl').
+\end{prolog}
+\dots ahol {\tt /home/salvi/szabályok.pl} a forráskód teljes elérési
+útja. Ne felejtsük le a parancs végéről a pontot, majd nyomjuk meg az
+újsor billentyűt.
+
+Ezután már jöhetnek a kérdések. A leckékben már csak ezek lesznek
+feltüntetve, de nem szabad megfeledkezni a szabályok betöltéséről sem.
+Amennyiben egy kérdésre több válasz is van, a következő választ
+általában a pontosvessző ({\tt ;}) lenyomásával kaphatjuk meg, a
+következő kérdés feltevéséhez pedig ilyenkor egy újsor billentyűt kell
+nyomni.
+
+Bizonyos rendszerekben mindez kényelmesebben is megtehető, így pl.~az
+\name{SWI-Prolog} internetes \name{SWISH} verziójában,\footnote{\tt
+https://swish.swi-prolog.org/} ahol a szabályok mindig automatikusan
+újraolvasódnak.
+
+\section*{Köszönetnyilvánítás}
+Köszönettel tartozom mindenekelőtt Varga Csillának, aki lelkesen
+végigcsinálta a könyvnek egy korai változatát, és kérdéseivel
+rávilágított arra, hogy mit kell még pontosítanom vagy jobban
+elmagyaráznom; és természetesen a feleségemnek, Iida Norikónak, akinek
+a támogatása nélkül ez a könyv nem készülhetett volna el.
+
+\begin{flushright}
+  Salvi Péter\\
+  Budapest, 2022.
+\end{flushright}
+
+\clearpage
+\thispagestyle{empty}
