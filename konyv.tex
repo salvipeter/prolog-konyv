@@ -13,6 +13,7 @@
 \usepackage{fancyvrb}
 \usepackage{imakeidx}
 \usepackage{pdfpages}
+\usepackage{storebox}
 \usepackage{tcolorbox}
 
 % Layout for debugging
@@ -24,7 +25,7 @@
 \newenvironment{prolog}{
   \VerbatimEnvironment
   \par\vspace{5pt}
-  \begin{adjustbox}{minipage=\textwidth-10pt,padding=5pt,bgcolor=black!5}
+  \begin{adjustbox}{minipage=\textwidth-10pt,padding=5pt,bgcolor=black!5,pagebreak}
     \begin{BVerbatim}
   }{
     \end{BVerbatim}
@@ -90,7 +91,7 @@
   szabadon terjeszthető.
 \end{center}
 \vspace*{\fill}
-{\footnotesize Ez a könyv a \LaTeX\ rendszer segítségével készült.\\
+{\footnotesize Ez a könyv \LaTeX-ben készült, Computer Modern betűtípussal.\\
   A borítón egy Lindenmayer-rendszer, az ún.~\emph{sárkány görbe} látható.
 }
 
