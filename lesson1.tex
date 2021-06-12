@@ -14,25 +14,45 @@ tény- és szabályrendszert, utána kérdéseket
 tehetünk fel, amiket a gép legjobb tudása szerint
 megválaszol.
 
-Példaként vegyük Mohamed próféta családját!
-\begin{prolog}
- Abú Tálib --- Abdulla === Ámna
-     |                  |
-     |                  |
-     |               Mohamed === Hadídzsa
-     |                        |
-     |                        |
-    Ali === Fátima ----------------- Zajnab
-         |                             |
-         |                             |
-Huszajn --- Muhszin --- Haszan       Umáma
-\end{prolog}
-(Ez csak egy nagyon kis részlete a családfának, és
-még ezen a részen belül sem tartalmaz minden
-kapcsolatot, mert pl. Ali Fátima halála után
-feleségül vette Umámát is. Egy teljesebb fát
-betettem a dokumentum végére.)
-
+Példaként vegyük Mohamed próféta családját
+(\ref{fig:csaladfa}.~ábra)!
+%
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \gtrset{edges={foreground={line width=2pt,black},no background}}
+    \genealogytree[template=signpost,
+                   options for node=m{box={colback=blue!20}},
+                   options for family={af}{extra edges=ta{foreground={line width=2pt,black}}}]{
+      child {
+        g[male,phantom]{Valaki}
+        c[male,id=t]{\large Abú Tálib}
+        child[id=af] {
+          g[male]{\large Abdulla}
+          p[female]{\large Ámna}
+          child {
+            g[male,id=m]{\large Mohamed}
+            p[female]{\large Hadídzsa}
+            child {
+              p[male,id=a]{\large Ali}
+              g[female]{\large Fátima}
+              c[male]{\large Huszajn}
+              c[male]{\large Muhszin}
+              c[male]{\large Haszan}
+            }
+            child {
+              g[female]{\large Zajnab}
+              c[female]{\large Umáma}
+            }
+          }
+        }
+      }
+    }
+  \end{tikzpicture}
+  \caption{Mohamed próféta családja (részlet).}
+  \label{fig:csaladfa}
+\end{figure}
+%
 A szülő--gyerek kapcsolatokat az alábbi program
 foglalja össze:
 
@@ -66,6 +86,13 @@ majd később lesz szó arról, hogy mik az elnevezés
 pontos szabályai, egyelőre azt jegyezzétek meg,
 hogy minden \emph{konkrét} dolog kisbetűvel
 írandó, és nem lehet benne szóköz.
+
+\begin{infobox}{.75}{Mohamed családfája}
+A programban a családfának csak egy nagyon kis
+szeletét használtuk, és még ezen a részen belül
+sem tartalmaz minden kapcsolatot, mert pl.~Ali
+Fátima halála után feleségül vette Umámát is.
+\end{infobox}
 
 \subsection*{Egyszerű kérdések}
 
@@ -377,13 +404,5 @@ vangyereke(X) :- szülő(X, _).
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{prolog}
 
-\begin{infobox}{.75}{foo és bar}
-  Érdekes infók Sed at magna at sem tempus
-  mattis. Duis et quam sed metus vestibulum
-  vulputate eget id eros. Curabitur vel consequat
-  purus. Etiam finibus, augue et hendrerit
-  imperdiet, mi mauris aliquam tortor, ultrices
-  interdum sem augue sed diam.
-\end{infobox}
 \section{Projekt: bla}
 Blabla
