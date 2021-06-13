@@ -8,8 +8,9 @@
 \usepackage[magyar]{babel}
 \addto\captionsmagyar{\renewcommand{\chaptername}{lecke}}
 
-\usepackage{adjustbox}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{fancyvrb}
 \usepackage[all]{genealogytree}
 \usepackage{imakeidx}
@@ -23,18 +24,17 @@
 \makeindex[intoc]
 
 % Definitions
-\newenvironment{prolog}{
+\newenvironment{program}{
   \VerbatimEnvironment
-  \par\vspace{5pt}
-  \begin{adjustbox}{minipage=\textwidth-10pt,padding=5pt,bgcolor=black!5,pagebreak}
-    \begin{BVerbatim}
-  }{
-    \end{BVerbatim}
-  \end{adjustbox}
-  \par\vspace{5pt}\noindent
+  \begin{Verbatim}[frame=leftline,numbers=left,formatcom=\color{OliveGreen}]}{\end{Verbatim}
+}
+\newenvironment{query}{
+  \VerbatimEnvironment
+  \begin{Verbatim}[frame=leftline,formatcom=\color{Violet}]}{\end{Verbatim}
 }
 \newcommand{\pr}[1]{{\tt #1}}
 \newcommand{\name}[1]{{\sc #1}}
+\theoremstyle{definition}
 \newtheorem{problem}{Feladat}
 \newenvironment{infobox}[2]{
   \begin{tcolorbox}[center,

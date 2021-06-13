@@ -42,15 +42,15 @@ A problémamegoldás Prologban mindig két részből áll:
 \end{enumerate}
 A legtöbb Prolog rendszer indításkor mindössze egy kérdőjel kiírásával
 fogad minket; ezzel jelzi, hogy várja a kérdést:
-\begin{prolog}
+\begin{query}
 ?-
-\end{prolog}  
+\end{query}  
 Az első feladatunk, hogy betöltsük az általunk írt programot. Ezt
 általában a \pr{consult} paranccsal tehetjük meg, például:\index{{\tt consult}}
 \vspace{-1em} % hack
-\begin{prolog}
+\begin{query}
 ?- consult('/home/salvi/szabályok.pl').
-\end{prolog}
+\end{query}
 \dots ahol {\tt /home/salvi/szabályok.pl} a forráskód teljes elérési
 útja. Ne felejtsük le a parancs végéről a pontot, majd nyomjuk meg az
 újsor billentyűt.
