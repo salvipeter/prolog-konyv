@@ -1,0 +1,48 @@
+%!PS
+
+/size 72 def
+/size2 68 def
+
+/hexagon {
+    /colors exch def
+    /y exch def
+    /x exch def
+    0 1 5 {
+        /i exch def
+        /alpha i 60 mul def
+        newpath
+        colors i get aload pop setrgbcolor
+        x y moveto
+        alpha cos size2 mul alpha sin size2 mul rlineto
+        alpha 120 add cos size2 mul alpha 120 add sin size2 mul rlineto
+        closepath gsave
+        0 0 0 setrgbcolor
+        stroke grestore fill
+    } for
+} def
+
+/black [ 0 0 0 ] def
+/purple [ 255 0 255 ] def
+/yellow [ 255 255 0 ] def
+/blue [ 0 0 255 ] def
+/green [ 0 255 0 ] def
+/red [ 255 0 0 ] def
+
+300 500
+2 copy
+[ black purple red yellow green blue ] hexagon
+2 copy size 3 sqrt 2 div mul add exch size 1.5 mul add exch
+[ yellow blue red black green purple ] hexagon
+2 copy size 3 sqrt 2 div mul add exch size 1.5 mul sub exch
+[ black green red blue yellow purple ] hexagon
+2 copy size 3 sqrt 2 div mul sub exch size 1.5 mul add exch
+[ yellow green blue red purple black ] hexagon
+2 copy size 3 sqrt 2 div mul sub exch size 1.5 mul sub exch
+[ black red blue yellow green purple ] hexagon
+2 copy size 3 sqrt mul add
+[ purple yellow blue green red black ] hexagon
+2 copy size 3 sqrt mul sub
+[ black green red purple yellow blue ] hexagon
+
+
+showpage
