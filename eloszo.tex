@@ -20,7 +20,7 @@ meg.
 
 \section*{Hogyan használjuk a könyvet?}
 A leckékben szereplő példákat érdemes a számítógépen kipróbálni, és
-kísérletezgetni velük, átírni ezt--azt, és megvizsgálni, hogy mi
+kísérletezgetni velük, átírni bennük ezt--azt, és megvizsgálni, hogy mi
 történik. Az efféle játék során mélyül el igazán a tudás; és ezt
 segítik a feladatok is, melyeknek megoldása a könyv végén található.
 
@@ -29,15 +29,17 @@ létezik, és mindegyik meglehetősen különböző. A legtöbb azonban
 kompatibilis az 1995-ös ISO szabvánnyal, és ez a könyv csak ezt
 feltételezi, illetve még annyit, hogy tudja kezelni a magyar ábécé
 betűit. Az ingyenesen letölthető, nyílt forráskódú rendszerek közül
-ilyen pl.~az \name{SWI-Prolog} és az~\name{XSB}, illetve a
-\name{GNU Prolog} programnak is létezik Unicode-kom\-pa\-ti\-bi\-lis
-változata, ami elfogadja az ékezetes karaktereket.
+ilyen az \name{SWI-Prolog}. Más implementációk, mint pl. az~\name{XSB}
+vagy a \name{GNU Prolog}, jelenleg nem fogadják el az ékezetes
+karaktereket, ezért ezek használata esetén a programokat ékezetek
+nélkül kell begépelni.
 
 A problémamegoldás Prologban mindig két részből áll:
 \begin{enumerate}
-\item Egy -- általában {\tt .pl} kiterjesztésű -- fájlban megadunk egy
-  szabályrendszert (a program \emph{forráskódját}). Ennek megírásához
-  tetszőleges szövegszerkesztőt használhatunk.\index{forráskód}
+\item Egy -- általában {\tt .pl} vagy {\tt .P} kiterjesztésű --
+  fájlban megadunk egy szabályrendszert (a program
+  \emph{forráskódját}). Ennek megírásához tetszőleges
+  szövegszerkesztőt használhatunk.\index{forráskód}
 \item Ezzel kapcsolatban a programnak felteszünk kérdéseket.
 \end{enumerate}
 A legtöbb Prolog rendszer indításkor mindössze egy kérdőjel kiírásával
@@ -46,14 +48,13 @@ fogad minket; ezzel jelzi, hogy várja a kérdést:
 ?-
 \end{query}  
 Az első feladatunk, hogy betöltsük az általunk írt programot. Ezt
-általában a \pr{consult} paranccsal tehetjük meg, például:\index{{\tt consult}}
-\vspace{-1em} % hack
+általában a \pr{consult} paranccsal tehetjük meg, például:\index{\pr{consult}}
 \begin{query}
 ?- consult('/home/salvi/szabályok.pl').
 \end{query}
-\dots ahol {\tt /home/salvi/szabályok.pl} a forráskód teljes elérési
-útja. Ne felejtsük le a parancs végéről a pontot, majd nyomjuk meg az
-újsor billentyűt.
+\dots ahol az aposztrófok között levő {\tt /home/salvi/szabályok.pl} a
+forráskód teljes elérési útja. Ne felejtsük le a parancs végéről a
+pontot, majd nyomjuk meg az újsor billentyűt.
 
 Ezután már jöhetnek a kérdések. A leckékben már csak ezek lesznek
 feltüntetve, de nem szabad megfeledkezni a szabályok betöltéséről sem.

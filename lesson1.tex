@@ -3,16 +3,17 @@
 
 \chapter{Ismerkedés}
 
-Az első leckében ...
+Az első leckében egy családfa vizsgálatán keresztül
+megismerkedünk a programok alkotóelemeivel és a
+\emph{rekurzió}\/val.
 
 \section{Tények}
 
 Egy Prolog program \emph{tényekből} és
-\emph{szabályokból} áll, amikből a számítógép
-következtetéseket tud levonni. Ha megadunk egy
-tény- és szabályrendszert, utána kérdéseket
-tehetünk fel, amiket a gép legjobb tudása szerint
-megválaszol.
+\emph{szabályokból} áll, amelyekből a számítógép
+következtetéseket tud levonni. Ha megadunk egy tény-
+és szabályrendszert, utána kérdéseket tehetünk fel,
+amelyeket a gép legjobb tudása szerint megválaszol.
 
 Példaként vegyük Mohamed próféta családját
 (\ref{fig:csaladfa}.~ábra)!
@@ -74,8 +75,8 @@ szülő(zajnab, umáma).
 \end{program}
 
 Ebben a programban minden sor egy \emph{tény}. Egy
-tény dolgok (itt emberek) közti kapcsolatot ír
-le. A formája a következő: adunk neki valami nevet
+tény dolgok (itt emberek) közti kapcsolatot ír le. A
+formája a következő: a kapcsolat nevével kezdődik
 (most ez a \pr{szülő}), utána zárójelek között
 vesszővel elválasztva felsoroljuk a kapcsolatban
 levő dolgokat, és a végén egy ponttal (\pr{.})
@@ -83,9 +84,9 @@ zárjuk.\index{tény}
 
 Talán furcsa lehet, hogy minden kisbetűvel van --
 majd később lesz szó arról, hogy mik az elnevezés
-pontos szabályai, egyelőre azt jegyezzétek meg,
-hogy minden \emph{konkrét} dolog kisbetűvel
-írandó, és nem lehet benne szóköz.
+pontos szabályai, egyelőre azt jegyezzük meg, hogy
+minden \emph{konkrét} dolog kisbetűvel írandó, és
+nem lehet benne szóköz.
 
 \begin{infobox}{.75}{Mohamed családfája}
 A programban a családfának csak egy nagyon kis
@@ -102,59 +103,80 @@ megkérdezhetjük, hogy
 \begin{query}
 ?- szülő(mohamed, fátima).
 \end{query}
-... amire a rendszer a \pr{true} (igaz) üzenettel
-válaszol, vagy hogy
+\dots amire a rendszer a \pr{true} (igaz) vagy
+\pr{yes} (igen) üzenettel
+válaszol;\index{\pr{true}}\index{\pr{yes}} vagy hogy
 \begin{query}
 ?- szülő(ali, zajnab).
 \end{query}
-... amire a \pr{false} (hamis) eredményt adja.
+\dots amire a \pr{false} (hamis) vagy \pr{no} (nem)
+eredményt adja.\index{\pr{false}}\index{\pr{no}} (A
+továbbiakban ez a könyv a \pr{true} és \pr{false}
+válaszokat fogja használni.)
 
 Egy kicsit érdekesebb a következő kérdés:
 \begin{query}
 ?- szülő(mohamed, Kicsoda).
 \end{query}
-Erre azt a feleletet kapjuk, hogy \pr{Kicsoda = fátima}. Ha rányomtok az eredmény alatt levő \pr{Next} (következő) gombra, akkor még azt is kiírja alá, hogy \pr{Kicsoda = zajnab}.
+Erre azt a feleletet kapjuk, hogy \pr{Kicsoda =
+  fátima}. Ha további válaszokat kérünk, akkor még
+azt is kiírja alá, hogy \pr{Kicsoda = zajnab}.
 
-Mi történt itt? Azáltal, hogy a második helyre egy nagybetűs szót (\pr{Kicsoda}) írtunk, azt mondtuk, hogy ez egy határozatlan, ismeretlen érték. A kérdést tehát magyarul úgy lehetne megfogalmazni: ,,Mohamed kinek a szülője?''
+Mi történt itt? Azáltal, hogy a második helyre egy
+nagybetűs szót (\pr{Kicsoda}) írtunk, azt mondtuk,
+hogy ez egy határozatlan, ismeretlen érték, egy
+\emph{változó}.\index{változó} A kérdést tehát
+magyarul úgy lehetne megfogalmazni: ,,Mohamed kinek
+a szülője?''
 
-Erre alapból megkeresi az első választ, amit talál (\pr{fátima}), és ha továbbit kérünk tőle, akkor megtalálja \pr{zajnab}-ot is, és látja, hogy nincs több, és így leáll.
+Erre megkeresi az első választ, amit talál
+(\pr{fátima}), és ha továbbit kérünk tőle, akkor
+megtalálja \pr{zajnab}ot is, és látja, hogy nincs
+több, és így leáll.
 
 Ha kisbetűvel írtuk volna:
 \begin{query}
 ?- szülő(mohamed, kicsoda).
 \end{query}
-... akkor a \pr{false} eredményt kaptuk volna, hiszen \pr{kicsoda} itt egy konkrét dolgot jelöl, a kérdés tehát azt jelenti: ,,Igaz-e, hogy Mohamed szülője Kicsodának?''
+\dots akkor a \pr{false} eredményt kaptuk volna,
+hiszen \pr{kicsoda} itt egy konkrét dolgot jelöl, a
+kérdés tehát azt jelenti: ,,Igaz-e, hogy Mohamed
+szülője Kicsodának?''
 
 A kérdés a másik irányban is feltehető:
 \begin{query}
 ?- szülő(Ki, ali).
 \end{query}
-... tehát ,,Ki Ali szülője?'', amire a \pr{Ki = abú\_tálib} feleletet kapjuk.
+\dots tehát ,,Ki Ali szülője?'', amire a \pr{Ki =
+  abú\_tálib} feleletet kapjuk.
 
-Még tovább is mehetünk, és rákérdezhetünk az összes szülő-gyerek kapcsolatra:
+Még tovább is mehetünk, és rákérdezhetünk az összes
+szülő-gyerek kapcsolatra:
 \begin{query}
 ?- szülő(Ki, Kinek).
 \end{query}
-... azaz ,,Ki kinek a szülője?''. Az első válasz az lesz, hogy
+\dots azaz ,,Ki kinek a szülője?''. Az első válasz
+az lesz, hogy
 \begin{query}
 Ki = abú_tálib,
 Kinek = ali
 \end{query}
-... és a \pr{Next} nyomogatásával a többit is megkaphatjuk. (A \pr{10} és \pr{100} gombok rendre a következő 10 ill. 100 megoldást mutatják meg.)
+További válaszok kérésével sorban megkapjuk az
+adatbázisunk minden egyes elemét.
 
 \subsection*{Összetett kérdések}
 
 Tegyük fel, hogy arra vagyunk kíváncsiak, hogy kik
 Mohamed unokái. Hogyan tudjuk ezt megkérdezni? Az
-unoka az a gyerek gyereke, tehát tudjuk, hogy van
-valaki, aki szülője az unokának, és akinek a
-szülője Mohamed. A logikai \emph{és}\/sel
+unoka definíció szerint a gyerek gyereke, tehát
+tudjuk, hogy van valaki, aki szülője az unokának, és
+akinek a szülője Mohamed. A logikai \emph{és}\/sel
 összekötött, együtt teljesítendő feltételeket
 vesszővel választjuk el:
 \begin{query}
 ?- szülő(mohamed, Valaki), szülő(Valaki, Unoka).
 \end{query}
-Négy megoldást is talál:
+Négy megoldást is kapunk:
 \begin{query}
 Unoka = huszajn,
 Valaki = fátima
@@ -165,28 +187,40 @@ Valaki = fátima
 Unoka = umáma,
 Valaki = zajnab
 \end{query}
-(Ezek páronként értendők, tehát Fátimától van Huszajn, Muhszin és Haszan, és Zajnabtól Umáma.)
+(Ezek páronként értendők, tehát Fátimától van
+Huszajn, Muhszin és Haszan, és Zajnabtól Umáma.)
 
-A kérdés két tagjának sorrendje felcserélhető, tehát ugyanezt az eredményt adja ez is:
+Ez azért működik, mert egy változónak minden
+előfordulása azonos értéket kell, hogy kapjon.
+A kérdés két tagjának sorrendje felcserélhető, tehát
+ugyanezt az eredményt adja ez is:
 \begin{query}
 ?- szülő(Valaki, Unoka), szülő(mohamed, Valaki).
 \end{query}
-(Majd látni fogjuk viszont, hogy a számításigényük nem azonos, érdemesebb az erősebb megszorítással kezdeni.)
+(Majd látni fogjuk viszont, hogy a számításigényük
+nem azonos, érdemesebb az erősebb megszorítással
+kezdeni.)
 
-Hasonlóan rákérdezhetünk, hogy kik Huszajn nagyszülei:
+Hasonlóan rákérdezhetünk, hogy kik Huszajn
+nagyszülei:
 \begin{query}
 ?- szülő(Valaki, huszajn), szülő(Nagyszülő, Valaki).
 \end{query}
-... amire megkapjuk Abú Tálibot, Mohamedet és Hadídzsát.
+\dots amire megkapjuk Abú Tálibot, Mohamedet és
+Hadídzsát.
 
-Ha arra vagyunk kíváncsiak, hogy Haszan és Huszajn testvérek-e, így fogalmazhatjuk meg:
+Ha arra vagyunk kíváncsiak, hogy Haszan testvére-e
+Huszajnnak, így fogalmazhatjuk meg:
 \begin{query}
 ?- szülő(Valaki, haszan), szülő(Valaki, huszajn).
 \end{query}
-Azt kapjuk, hogy \pr{Valaki = ali}, tehát a válasz igen. Ha \pr{huszajn} helyett \pr{abdulla}-t írunk, akkor \pr{false}-ot kapunk.
+Azt kapjuk, hogy \pr{Valaki = ali}, tehát a válasz
+igen. Ha \pr{huszajn} helyett \pr{abdullá}t írunk,
+akkor \pr{false} választ kapunk.
 
 \begin{problem}
-Válaszoljátok meg az alábbi kérdéseket először magatok, majd utána ellenőrizzétek a számítógépen!
+Válaszoljátok meg az alábbi kérdéseket először
+magatok, majd utána ellenőrizzétek a számítógépen!
 \begin{enumerate}
 \item \pr{?- szülő(huszajn, X).}
 \item \pr{?- szülő(X, huszajn).}
@@ -230,7 +264,9 @@ nő(zajnab).
 nő(umáma).
 \end{program}
 
-Ha most a \pr{szülő} mellett szeretnénk \pr{anya} és \pr{apa} kapcsolatokat is létrehozni, ezt megtehetjük egyenként:
+Ha most a \pr{szülő} mellett szeretnénk \pr{anya} és
+\pr{apa} kapcsolatokat is létrehozni, ezt
+megtehetjük egyenként:
 \begin{program}
 anya(ámna, mohamed).
 anya(hadídzsa, fátima).
@@ -239,112 +275,205 @@ apa(abú_tálib, ali).
 apa(abdulla, mohamed).
 ...
 \end{program}
-... de ez elég sok munka, és érezzük, hogy felesleges, hiszen kikövetkeztethető.
-
-Sokkal egyszerűbb ezt egy-egy szabállyal megoldani:
+Ez azonban elég sok munka, és érezzük, hogy
+felesleges, hiszen kikövetkeztethető.  Szabályok
+segítségével ezt sokkal egyszerűbben megoldhatjuk:
 \begin{program}
 anya(X, Y) :- szülő(X, Y), nő(X).
 apa(X, Y) :- szülő(X, Y), férfi(X).
 \end{program}
-A \pr{:-} jelet itt úgy olvashatjuk ki, hogy ,,akkor, ha'', tehát ,,X anyja Y-nak akkor, ha X szülője Y-nak és X nő''. A baloldalon levő részt a szabály \emph{fej}\/ének, a jobboldalát a szabály \emph{törzs}\/ének nevezzük.
-  
+A \pr{:-} jelet itt úgy olvashatjuk ki, hogy
+,,akkor, ha'', tehát ,,X anyja Y-nak akkor, ha X
+szülője Y-nak és X nő''. A baloldalon levő részt a
+szabály \emph{fej}\/ének, a jobboldalát a szabály
+\emph{törzs}\/ének nevezzük.\index{fej}\index{törzs}
+
 Mi történik, amikor feltesszük az alábbi kérdést?
 \begin{query}
 ?- anya(ámna, mohamed).
 \end{query}
-A rendszer megtalálja az \pr{anya} szabályt, és \emph{egyesíti} az \pr{X}-et \pr{ámna}-val, az \pr{Y}-t pedig \pr{mohamed}-del. (Az egyesítésről még később szó lesz, itt egyszerűen helyettesítést jelent.) Ezután megnézi, hogy a szabály jobboldalán levő feltétel teljesül-e; ez most \pr{szülő(ámna, mohamed), nő(ámna)}, és ezek a tények szerepelnek a programban, tehát \pr{true}-val tér vissza.
+A rendszer megtalálja az \pr{anya} szabályt, és
+\emph{egyesíti} az \pr{X}-et \pr{ámná}\-val, az
+\pr{Y}-t pedig \pr{mohamed}del.\index{egyesítés} (Az
+egyesítésről még később szó lesz, itt egyszerűen
+helyettesítést jelent.) Ezután megnézi, hogy a
+szabály jobboldalán levő feltétel teljesül-e; ez
+most a
+\begin{query}
+szülő(ámna, mohamed), nő(ámna).
+\end{query}
+\dots és ezek a tények szerepelnek a programban,
+tehát \pr{true} válasszal tér vissza.
 
 Definiáljuk a ,,nagyszülő'' kapcsolatot!
 \begin{program}
 nagyszülő(X, Z) :- szülő(X, Y), szülő(Y, Z).
 \end{program}
-Ez pontosan követi azt, ahogy megkerestük valakinek a nagyszülőjét.
+Ez pontosan követi azt, ahogy megkerestük valakinek
+a nagyszülőjét.
 
 \subsection*{Problémás esetek}
 
 Hogyan tudnánk megadni a ,,fivér'' kapcsolatot?
 \begin{program}
-fivér(X, Y) :- szülő(Z, X), szülő(Z, Y), férfi(X).
+fivér(X, Y) :- férfi(X), szülő(Z, X), szülő(Z, Y).
 \end{program}
-Tehát X fivére Y-nak, ha van egy közös szülőjük és X férfi.
+Tehát X fivére Y-nak, ha férfi és van közös
+szülőjük.
 
-Itt érdemes megjegyezni, hogy bár Abú Tálib és Abdulla testvérek voltak, a
+Itt érdemes megjegyezni, hogy bár Abú Tálib és
+Abdulla testvérek voltak, a
 \begin{query}
 ?- fivér(abú_tálib, abdulla).
 \end{query}
-kérdésre \pr{false} a válasz, mivel a programnak nincs arról tudomása, hogy lenne közös szülőjük. (A Prolog mindent hamisnak vesz, amit az általa ismert adatokból nem tud kikövetkeztetni, és ez időnként furcsa következményekkel járhat - erről majd később.)
+kérdésre \pr{false} a válasz, mivel a programnak
+nincs arról tudomása, hogy lenne közös szülőjük. (A
+Prolog mindent hamisnak vesz, amit az általa ismert
+adatokból nem tud kikövetkeztetni, és ez időnként
+furcsa következményekkel járhat -- erről majd
+később.)
 
-Egy másik problémába ütközünk, ha Mohamed fivéreire vagyunk kíváncsiak:
+Egy másik problémába ütközünk, ha Mohamed fivéreire
+vagyunk kíváncsiak:
 \begin{query}
 ?- fivér(mohamed, X).
 \end{query}
-Az eredmény, meglepő módon, \pr{X = mohamed}! Ebből látszik, hogy a definíciónk nem volt elég pontos; hozzá kell venni azt is, hogy senki nem fivére önmagának:
+Az eredmény, meglepő módon, \pr{X = mohamed}! Ebből
+látszik, hogy a definíciónk nem volt elég pontos;
+hozzá kell venni azt is, hogy senki nem fivére
+önmagának:
 \begin{program}
-fivér(X, Y) :- szülő(Z, X), szülő(Z, Y), férfi(X), X \= Y.
+fivér(X, Y) :-
+    férfi(X),
+    szülő(Z, X), szülő(Z, Y),
+    X \= Y.
 \end{program}
 Itt a \pr{\textbackslash=} jelentése ,,nem azonos''.
+\index{\pr{\textbackslash=}} Ez a példa azt is
+illusztrálja, hogy a szabályok több sorban is
+írhatóak; ilyenkor a második és további sorokat
+beljebb szokás húzni.
 
-\subsection*{Többféle olvasat}
+\subsection*{Egyedüli változók}
 
 Készítsük el a
 \begin{program}
 vangyereke(X) :- szülő(X, Y).
 \end{program}
-szabályt.
-
-Ennek az az érdekessége, hogy többféleképpen is ki lehet olvasni:
+szabályt.  Ennek az az érdekessége, hogy attól
+függően, hogy hogyan olvassuk ki, az állítás
+\emph{minden} Y-ra vonatkozik, vagy csak azt
+mondja, hogy \emph{létezik} egy fajta Y:
 
 \begin{enumerate}
-\item Ha X szülője Y-nak, akkor X-nek van gyereke.
-\item X-nek van gyereke, ha X szülője valakinek.
+\item (Minden X és Y esetén,) ha X szülője Y-nak,
+  akkor X-nek van gyereke.
+\item X-nek akkor van gyereke, ha létezik olyan Y,
+  hogy X szülője Y-nak.
 \end{enumerate}
-A két olvasat egyenértékű.
+A két olvasat egyenértékű; ez a kettősség annak a
+következménye, hogy az \pr{Y} változó csak a szabály
+törzsében fordul elő.
 
-Ha ezt a szabályt beírjátok a programba, egy figyelmeztetés fog megjelenni, hogy az \pr{Y} egy ,,singleton variable'', azaz egy egyszeri változó. Ez csak annyit jelent, hogy az \pr{Y}-t sehol nem használjuk, ezért nem fontos neki nevet adni. Az ilyen névtelen változók helyett az alsóvonás (\pr{\_}) jelet szokás használni, vagy egy ezzel kezdődő nevet (pl. \pr{\_Y}). Ha ilyenre átírjátok, akkor a figyelmeztetés is eltűnik.
+A fenti példa más miatt is érdekes. Mivel az \pr{Y}
+változó a szabályban mindössze egyszer fordul elő,
+nem lehet hatással az eredmény kiszámítására, tehát
+érdektelen. Ezt úgy szokás jelezni, hogy a helyére
+egy alsóvonást (\pr{\_}) írunk, vagy egy ezzel
+kezdődő nevet (pl.~\pr{\_Y}).\index{\pr{\_}} Ha
+kérdésben szerepel ilyen változó, akkor a válaszban
+ennek az értéke nem fog megjelenni. Így pl.~az
+alábbi kérdés megadja Mohamed unokáit anélkül, hogy
+megmutatná a szülőket:
+\begin{query}
+?- szülő(mohamed, _Valaki), szülő(_Valaki, Unoka).
+\end{query}
+
+Ha több alsóvonás szerepel, ezek értéke lehet
+különböző, tehát a
+\begin{query}
+?- szülő(_, _).
+\end{query}
+kérdésre \pr{true} lesz a válasz, pedig senki sem
+szülője önmagának.
+
+Ha egy egyszer szereplő változónak ,,normális''
+nevet adunk, akkor erre a fordító általában
+figyelmeztet minket, mert ez gyakran egy elírás
+következménye. Pl.~az alábbi programban a
+\pr{Valaki} változóból egyszer kimaradt egy \pr{a}
+betű:
+\begin{program}
+nagyszülő(X, Y) :-
+    szülő(X, Valaki), szülő(Valki, Y).
+\end{program}
 
 \begin{problem}
 Fordítsátok le Prologra!
 \begin{enumerate}  
-\item Akinek van gyereke, az boldog. (\pr{boldog} szabály)
-\item Minden X-re, ha X-nek van egy gyereke akinek van egy fivére, akkor X-nek két gyereke van. (\pr{kétgyerekes} szabály)
+\item Akinek van gyereke, az boldog. (\pr{boldog}
+  szabály)
+\item Minden X-re, ha X-nek van egy gyereke akinek
+  van egy fivére, akkor X-nek két gyereke
+  van. (\pr{kétgyerekes} szabály)
 \end{enumerate}
 \end{problem}
 \begin{problem}
-  Készítsétek el az \pr{unoka} szabályt! Teszteljétek a saját családfátokon!
+  Készítsétek el az \pr{unoka} szabályt!
+  Teszteljétek a saját családfátokon!
 \end{problem}
 \begin{problem}
-  Csináljatok egy \pr{nagybácsi} szabályt a \pr{szülő} és \pr{fivér} segítségével! Keressétek meg vele Robin unokahúgait és unokaöccseit!
+  Csináljatok egy \pr{nagybácsi} szabályt a
+  \pr{szülő} és \pr{fivér} segítségével! Keressétek
+  meg vele Robin unokahúgait és unokaöccseit!
 \end{problem}
 
 \section{Rekurzív szabályok}
 
-Adjunk még egy utolsó szabályt a programunkhoz: az \emph{ős} fogalmát. Valakinek az őseit úgy kapjuk meg, hogy felfelé megyünk a családfában: ős a szülő, a nagyszülő, a dédszülő stb. Ezt elkezdhetjük írni szabályokkal:
+Adjunk még egy utolsó szabályt a programunkhoz: az
+\emph{ős} fogalmát. Valakinek az őseit úgy kapjuk
+meg, hogy felfelé megyünk a családfában: ős a szülő,
+a nagyszülő, a dédszülő stb. Ezt elkezdhetjük írni
+szabályokkal:
 \begin{program}
 ős(X, Z) :- szülő(X, Z).
 ős(X, Z) :- szülő(X, Y), szülő(Y, Z).
-ős(X, Z) :- szülő(X, Y1), szülő(Y1, Y2), szülő(Y2, Z).
-ős(X, Z) :- szülő(X, Y1), szülő(Y1, Y2), szülő(Y2, Y3), szülő(Y3, Z).
+ős(X, Z) :-
+    szülő(X, Y1), szülő(Y1, Y2), szülő(Y2, Z).
+ős(X, Z) :-
+    szülő(X, Y1), szülő(Y1, Y2),
+    szülő(Y2, Y3), szülő(Y3, Z).
 ...
 \end{program}
-Ez nagyon jól működik, de véges - bármennyi ilyen programsort írok, mindig tudok eggyel feljebb menni a családfában, és azt már nem kezeli.
+Ez nagyon jól működik, de véges -- bármennyi ilyen
+programsort írok, mindig tudok eggyel feljebb menni
+a családfában, és azt már nem kezeli.
 
-Egy kis trükkel meg tudjuk ezt oldani: azt mondjuk, hogy ha X gyereke őse Z-nek, akkor X is őse Z-nek:
+Egy kis trükkel meg tudjuk ezt oldani: azt mondjuk,
+hogy ha X gyereke őse Z-nek, akkor X is őse Z-nek:
 \begin{program}
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{program}
-Ez így magában még azonban nem elég, mert így ahhoz, hogy valaki ős legyen, mindig valaki másnak is ősnek kéne lennie, valahol ennek meg kéne állnia. Elég hozzávenni a legegyszerűbb esetet, amikor a szülő az ős:
+Ez így magában még azonban nem elég, mert így ahhoz,
+hogy valaki ős legyen, mindig valaki másnak is ősnek
+kéne lennie, valahol ennek meg kéne állnia. Elég
+hozzávenni a legegyszerűbb esetet, amikor a szülő az
+ős:
 \begin{program}
 ős(X, Z) :- szülő(X, Z).
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{program}
-Ez a kettő együtt már működik. X őse Z-nek, ha vagy (i) X szülője Z-nek, vagy (ii) X szülője Y-nak és Y őse Z-nek. Próbáljátok ki, mit ad az
+Ez a kettő együtt már működik. X őse Z-nek, ha vagy
+(i) X szülője Z-nek, vagy (ii) X szülője Y-nak és Y
+őse Z-nek. Próbáljátok ki, mit ad az
 \begin{query}
 ?- ős(X, huszajn).
 \end{query}
 kérdés!
 
 \begin{problem}
-Tegyük fel, hogy az \pr{ős} definícióját megváltoztatjuk!
+Tegyük fel, hogy az \pr{ős} definícióját
+megváltoztatjuk!
 \begin{program}
 ős(X, Z) :- szülő(X, Z).
 ős(X, Z) :- szülő(Y, Z), ős(X, Y).
@@ -361,7 +490,7 @@ jobbra levő szöveg érdektelen, mintha ott se
 lenne.
 
 \begin{program}
-% szülő(X, Y) -> X az Y szülője
+% szülő(X, Y) => X az Y szülője
 szülő(abú_tálib, ali).
 szülő(abdulla, mohamed).
 szülő(ámna, mohamed).
@@ -391,12 +520,15 @@ nő(fátima).
 nő(zajnab).
 nő(umáma).
 
-anya(X, Y) :- szülő(X, Y), nő(X).     % X az Y anyja
-apa(X, Y) :- szülő(X, Y), férfi(X).   % X az Y apja
+anya(X, Y) :- szülő(X, Y), nő(X).   % X az Y anyja
+apa(X, Y) :- szülő(X, Y), férfi(X). % X az Y apja
 
 nagyszülő(X, Z) :- szülő(X, Y), szülő(Y, Z).
 
-fivér(X, Y) :- szülő(Z, X), szülő(Z, Y), férfi(X), X \= Y.
+fivér(X, Y) :-
+    férfi(X),
+    szülő(Z, X), szülő(Z, Y),
+    X \= Y.
 
 vangyereke(X) :- szülő(X, _).
 
