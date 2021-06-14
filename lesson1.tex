@@ -93,6 +93,8 @@ A programban a családfának csak egy nagyon kis
 szeletét használtuk, és még ezen a részen belül
 sem tartalmaz minden kapcsolatot, mert pl.~Ali
 Fátima halála után feleségül vette Umámát is.
+
+\includegraphics[width=\textwidth]{images/prophet-family.jpg}
 \end{infobox}
 
 \subsection*{Egyszerű kérdések}
@@ -219,8 +221,7 @@ igen. Ha \pr{huszajn} helyett \pr{abdullá}t írunk,
 akkor \pr{false} választ kapunk.
 
 \begin{problem}
-Válaszoljátok meg az alábbi kérdéseket először
-magatok, majd utána ellenőrizzétek a számítógépen!
+Válaszold meg az alábbi kérdéseket!
 \begin{enumerate}
 \item \pr{?- szülő(huszajn, X).}
 \item \pr{?- szülő(X, huszajn).}
@@ -229,7 +230,7 @@ magatok, majd utána ellenőrizzétek a számítógépen!
 \end{enumerate}
 \end{problem}
 \begin{problem}
-Fogalmazzátok meg Prologban!
+Fogalmazd meg Prologban!
 \begin{enumerate}
 \item Ki Ali szülője?
 \item Umámának van gyereke?
@@ -237,7 +238,7 @@ Fogalmazzátok meg Prologban!
 \end{enumerate}
 \end{problem}
 \begin{problem}
-Készítsétek el a saját családfátokat (nagyszülőkig
+Készítsd el a saját családfádat (nagyszülőkig
 és unokatestvérekig)!
 \end{problem}
 
@@ -409,7 +410,7 @@ nagyszülő(X, Y) :-
 \end{program}
 
 \begin{problem}
-Fordítsátok le Prologra!
+Fordítsd le Prologra!
 \begin{enumerate}  
 \item Akinek van gyereke, az boldog. (\pr{boldog}
   szabály)
@@ -419,13 +420,13 @@ Fordítsátok le Prologra!
 \end{enumerate}
 \end{problem}
 \begin{problem}
-  Készítsétek el az \pr{unoka} szabályt!
-  Teszteljétek a saját családfátokon!
+  Készítsd el az \pr{unoka} szabályt!
+  Teszteld a saját családfádon!
 \end{problem}
 \begin{problem}
-  Csináljatok egy \pr{nagybácsi} szabályt a
-  \pr{szülő} és \pr{fivér} segítségével! Keressétek
-  meg vele Robin unokahúgait és unokaöccseit!
+  Csinálj egy \pr{nagybácsi} szabályt a \pr{szülő}
+  és \pr{fivér} segítségével, és keresd meg vele Ali
+  unokahúgait!
 \end{problem}
 
 \section{Rekurzív szabályok}
@@ -536,5 +537,129 @@ vangyereke(X) :- szülő(X, _).
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{program}
 
-\section{Projekt: bla}
-Blabla
+\clearpage
+
+\section{Projekt: a négyszín-tétel}
+Mindössze négy szín elég ahhoz, hogy tetszőleges
+térképen az országokhoz színeket rendeljünk úgy,
+hogy minden országhatár két különböző színt
+válasszon el. (Ez feltételezi, hogy az országok
+mindig összefüggőek, tehát nincsen másik ország, ami
+kettéválasztaná őket -- ez egy valódi térképnél
+gyakran nem teljesül.)
+
+\begin{infobox}{0.75}{a négyszín-tétel}
+Ez volt az első olyan matematikai tétel, amelynek
+bizonyítását számítógéppel adták meg, és ezért sok
+matematikus kezdetben nem is fogadta el
+bizonyítottnak, és csak ,,négyszín-sejtésként''
+hivatkoztak rá. Minden joguk megvolt rá: a több,
+mint egy hónapon át futó 1976-os eredeti program
+állítólag tele volt hibákkal. 20 évvel később
+azonban egy sokkal hatékonyabb megoldást is
+találtak, és 2004-ben egy tételbizonyító rendszer is
+belátta, hogy az állítás mindig igaz.
+\end{infobox}
+
+Próbáljuk meg kiszínezni Európa egy szeletét!
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{images/europe.pdf}
+\end{center}
+
+Jelölje \pr{t} azt, hogy két ország
+\emph{találkozik}. A találkozáskor a színeknek
+különbözőeknek kell lennie, tehát felvehetjük a
+következő tényeket (egyelőre 2 színnel):
+\begin{program}
+t(piros, zöld). t(zöld, piros).
+\end{program}
+Ahhoz, hogy a térképünk megfeleljen a
+követelményeknek, minden határnál teljesülnie kell
+egy ilyen találkozásnak:
+\begin{program}
+térkép(DE, CH, IT, PL, CZ, AT, SI, HR, SK, HU) :-
+    t(DE, PL), t(DE, CZ), t(DE, AT), t(DE, CH),
+    t(CH, AT), t(CH, IT),
+    t(IT, AT), t(IT, SI),
+    t(PL, CZ), t(PL, SK),
+    t(CZ, AT), t(CZ, SK),
+    t(AT, SK), t(AT, HU), t(AT, SI),
+    t(SI, HU), t(SI, HR),
+    t(HR, HU),
+    t(SK, HU).
+\end{program}
+
+Mivel a színekre vonatkozó szabályt mindkét
+sorrendben felvettük, az országok sorrendje nem
+számít, és így elég mindig csak az egyik verziót
+felírni. Ha most megkérdezzük, hogy
+\begin{query}
+?- térkép(DE, CH, IT, PL, CZ, AT, SI, HR, SK, HU).
+\end{query}
+\dots akkor (nem túl meglepő módon) tagadó választ
+kapunk. Vegyünk hozzá még egy színt!
+\begin{program}
+t(piros, kék). t(zöld, kék).
+t(kék, piros). t(kék, zöld).
+\end{program}
+\dots még mindig nem elég. (Ez is elég világos -- ha
+Ausztria pl.~piros, akkor a szomszédos országokat
+körbejárva felváltva kéne zöldet és kéket kapnunk,
+de páratlan számú ország van körülötte.)
+Vegyük akkor hozzá a sárgát is!
+\begin{program}
+t(piros, sárga). t(zöld, sárga). t(kék, sárga).
+t(sárga, piros). t(sárga, zöld). t(sárga, kék).
+\end{program}
+Ha most tesszük fel a kérdést, akkor már talál
+megoldást:
+\begin{query}
+AT = PL = zöld,
+CH = CZ = SI = kék,
+DE = HR = IT = SK = piros,
+HU = sárga
+\end{query}
+Az egyetlen szépséghibája, hogy Szlovénia kék lett,
+és így egybefolyhat a tenger kékjével. Több
+lehetőségünk is van:
+\begin{itemize}
+\item Lecseréljük a kéket egy másik színre
+\item Addig kérünk további megoldásokat, amíg már
+  egy tengerparti ország sem lesz kék színű
+\item Felcseréljük a kék és sárga színeket
+\end{itemize}
+
+Tegyük fel, hogy szeretjük a kék színt, és nem
+akarjuk lecserélni (meg egyébként is akkor már 5
+szín kéne!), a másik két megoldás pedig nem elég
+automatikus. Mit tehetünk?
+
+Felvehetjük plusz ,,országként'' a tengert, és
+megkövetelhetjük, hogy mindig kék legyen:
+\begin{program}
+térkép(DE, CH, IT, PL, CZ, AT, SI, HR, SK, HU) :-
+    Tenger = kék,
+    t(DE, PL), t(DE, CZ), t(DE, AT), t(DE, CH),
+    t(CH, AT), t(CH, IT),
+    t(IT, AT), t(IT, SI),
+    t(PL, CZ), t(PL, SK),
+    t(CZ, AT), t(CZ, SK),
+    t(AT, SK), t(AT, HU), t(AT, SI),
+    t(SI, HU), t(SI, HR),
+    t(HR, HU),
+    t(SK, HU),
+    t(DE, Tenger), t(IT, Tenger), t(PL, Tenger),
+    t(SI, Tenger), t(HR, Tenger).
+\end{program}
+Így már tökéletes megoldást kapunk.
+
+Megtehettük volna azt is, hogy a \pr{Tenger}ek
+helyett egyszerűen \pr{kék}et írunk, és akkor
+nincsen szükség a \pr{Tenger = kék} sorra sem, de
+egy kicsit kevésbé olvasható lenne a
+forráskód. Ilyen rövid programoknál még ez nem olyan
+lényeges, de általában a programozásban fontos arra
+törekedni, hogy ne csak a számítógép, hanem egy
+másik ember (és pár hét múlva mi magunk) is
+megértse, amit írtunk.
