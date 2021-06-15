@@ -13,6 +13,7 @@
 \usepackage{amsthm}
 \usepackage{enumitem}
 \usepackage{fancyvrb}
+\usepackage[symbol]{footmisc}
 \usepackage[all]{genealogytree}
 \usepackage{imakeidx}
 \usepackage{pdfpages}
@@ -25,6 +26,8 @@
 \makeindex[intoc]
 
 % Definitions
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\renewcommand{\thempfootnote}{\fnsymbol{mpfootnote}}
 \newenvironment{program}{
   \VerbatimEnvironment
   \begin{Verbatim}[frame=leftline,numbers=left,formatcom=\color{OliveGreen}]}{\end{Verbatim}
