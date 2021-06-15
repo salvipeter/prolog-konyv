@@ -1,10 +1,10 @@
-lap(l(fekete, lila, sárga, kék, zöld, piros)).
-lap(l(fekete, zöld, piros, kék, sárga, lila)).
-lap(l(fekete, zöld, lila, sárga, kék, piros)).
-lap(l(fekete, lila, piros, sárga, zöld, kék)).
-lap(l(fekete, piros, kék, sárga, zöld, lila)).
-lap(l(fekete, sárga, zöld, kék, piros, lila)).
-lap(l(fekete, zöld, piros, lila, sárga, kék)).
+lap(l(fekete,lila,sárga,kék,zöld,piros)).
+lap(l(fekete,zöld,piros,kék,sárga,lila)).
+lap(l(fekete,zöld,lila,sárga,kék,piros)).
+lap(l(fekete,lila,piros,sárga,zöld,kék)).
+lap(l(fekete,piros,kék,sárga,zöld,lila)).
+lap(l(fekete,sárga,zöld,kék,piros,lila)).
+lap(l(fekete,zöld,piros,lila,sárga,kék)).
 
 forgat(l(A,B,C,D,E,F), l(A,B,C,D,E,F)).
 forgat(l(A,B,C,D,E,F), l(B,C,D,E,F,A)).

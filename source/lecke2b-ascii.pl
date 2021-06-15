@@ -1,10 +1,10 @@
-lap(l(fekete, lila, sarga, kek, zold, piros)).
-lap(l(fekete, zold, piros, kek, sarga, lila)).
-lap(l(fekete, zold, lila, sarga, kek, piros)).
-lap(l(fekete, lila, piros, sarga, zold, kek)).
-lap(l(fekete, piros, kek, sarga, zold, lila)).
-lap(l(fekete, sarga, zold, kek, piros, lila)).
-lap(l(fekete, zold, piros, lila, sarga, kek)).
+lap(l(fekete,lila,sarga,kek,zold,piros)).
+lap(l(fekete,zold,piros,kek,sarga,lila)).
+lap(l(fekete,zold,lila,sarga,kek,piros)).
+lap(l(fekete,lila,piros,sarga,zold,kek)).
+lap(l(fekete,piros,kek,sarga,zold,lila)).
+lap(l(fekete,sarga,zold,kek,piros,lila)).
+lap(l(fekete,zold,piros,lila,sarga,kek)).
 
 forgat(l(A,B,C,D,E,F), l(A,B,C,D,E,F)).
 forgat(l(A,B,C,D,E,F), l(B,C,D,E,F,A)).

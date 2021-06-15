@@ -1,5 +1,652 @@
+% -*- fill-column: 52 -*-
+% (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
 \chapter{Listák}
+Ebben a leckében ...
 \section{Listák}
-Blabla
+Ahogy a múltkor láttuk, egy Prolog kifejezés vagy
+egyszerű (konstans vagy változó), vagy egy fix
+aritású összetett struktúra. Gyakran előfordul
+azonban, hogy nem tudjuk előre, hogy hány adattal
+akarunk foglalkozni. Hogyan tudnánk dolgoknak egy
+listáját egy struktúrával kifejezni? Természetesen
+rekurzívan! Kezdjük először csak két dologgal:
+\index{lista}
+\begin{query}
+lista(a, b)
+\end{query}
+Ha hármat akarunk beletenni egy listába, akkor
+megtehetnénk, hogy eggyel több argumentumot veszünk
+bele:
+\begin{query}
+lista(a, b, c)
+\end{query}
+\dots de ez több okból sem igazán jó
+megoldás. Egyrészt ez így egy másik funktor lesz
+(hiszen más az aritása), másrészt ezzel még mindig
+csak \emph{ismert} hosszúságú listákat tudnánk
+készíteni. Helyette csinálhatjuk viszont a
+következőt:
+\begin{query}
+lista(a, lista(b, c))
+\end{query}
+Ezt tetszőlegesen lehet folytatni, pl.
+\begin{query}
+lista(a, lista(b, lista(c, lista(d, e))))
+\end{query}
+Ez egyrészt azért jó, mert így mindig egy 2-aritású
+\pr{lista} funktorunk van, másrészt ezzel tudunk
+olyat írni, hogy
+\begin{query}
+lista(a, Maradék)
+\end{query}
+ami egy tetszőleges lista, aminek az első eleme
+\pr{a}, vagy
+\begin{query}
+lista(a, lista(b, Maradék))
+\end{query}
+ami egy olyan tetszőleges lista, aminek az első két
+eleme \pr{a} és \pr{b}.
+
+Ennek így egy szépséghibája van: az utolsó elem
+kezelése kicsit más, mint a többié, és emiatt pl.~az
+előző példákban a ,,tetszőleges'' lista mégsem
+teljesen tetszőleges, mert nem lehet egy-
+ill.~kételemű. Ezt azzal tudjuk megoldani, hogy
+bevezetünk egy olyan konstanst, amivel a lista végét
+jelöljük. Pl.~az \pr{a}, \pr{b} és \pr{c} elemeket
+tartalmazó lista ekkor így néz ki:
+\begin{query}
+lista(a, lista(b, lista(c, vége)))
+\end{query}
+
+A szokásos Prolog jelölés a \pr{lista} helyett a
+pont (\pr{.}) funktor, a \pr{vége} helyett pedig a
+szögletes zárójelpár (\pr{[]}) atom.\footnote{Az
+\name{SWI-Prolog} a pontot lecserélte a kicsit
+furcsán kinéző \pr{'[|]'} funktorra.}
+Az előző listát tehát erre átírva ilyet kapunk:
+\index{\pr{.}}\index{\pr{[]}}
+\begin{query}
+.(a, .(b, .(c, [])))
+\end{query}
+Ez sajnos nem a legkönnyebben olvasható. Szerencsére
+van rá egy egyszerűsített jelölés:
+\begin{query}
+?- .(X, Y) = [X|Y].
+true
+\end{query}
+Sőt, nem csak
+\begin{query}
+?- .(a, .(b, .(c, []))) = [a | [b | [c | []]]].
+true
+\end{query}
+teljesül, hanem az egymásba ágyazást vesszővel lehet
+helyettesíteni:
+\begin{query}
+?- [a | [b | [c | []]]] = [a, b, c | []].
+true
+\end{query}
+És végül van még egy utolsó ,,egyszerűsítés'' (a
+szakszó erre a \emph{szintaktikus cukor}): ha a
+függőleges vonal jobboldalán a \pr{[]} van, akkor
+ezt el lehet hagyni:
+\index{szintaktikus cukor}
+\begin{query}
+?- [a, b, c | []] = [a, b, c].
+true
+\end{query}
+Ez tehát a Prolog \emph{láncolt lista} struktúrája;
+a \pr{[]} neve \emph{üres lista}, és egy \pr{[X|Y]}
+listában az \pr{X} a lista \emph{eleje}, az \pr{Y}
+pedig a lista \emph{maradéka}. A maradék mindig vagy
+egy lista, vagy az üres lista atom.
+\index{lista!láncolt}\index{lista!üres}
+\index{lista!feje}\index{lista!maradéka}
+
+A gyakorlatban mindig ezt az egyszerű formát
+használjuk, de fontos érteni, hogy ez valójában
+egymásba ágyazott funktorokból áll, és ezért
+pl.~\pr{[a, b, c] = [a | [b, c]] = [a, b | [c]] =
+  [a, b, c | []]}.
+
+\section{Műveletek listákon}
+
+Az alábbiakban nézzünk meg néhány hasznos műveletet,
+amiket listákra alkalmazhatunk.
+
+\subsection*{Tartalmazás}
+Az egyik legfontosabb kérdés, amit listákkal
+kapcsolatban feltehetünk, az az, hogy valami benne
+van-e:
+\begin{program}
+tartalmaz(X, [X|_]).
+tartalmaz(X, [_|Maradék]) :- tartalmaz(X, Maradék).
+\end{program}
+\index{\pr{tartalmaz}}
+Szavakban megfogalmazva, egy lista akkor tartalmaz
+valamit, (i) ha az az eleje, vagy (ii) ha a maradéka
+tartalmazza azt. Ezzel
+\begin{query}
+?- tartalmaz(b, [a,b,c]).
+true
+?- tartalmaz(b, [a,[b,c]]).
+false
+?- tartalmaz([b,c], [a,[b,c]]).
+true
+\end{query}
+Emellett a
+\begin{query}
+?- tartalmaz(X, [a,b,c]).
+\end{query}
+kérdésre megkapjuk az \pr{X = a}, \pr{X = b} és
+\pr{X = c} megoldásokat, sőt, meg is fordíthatjuk,
+és feltehetjük a kérdést, hogy ,,Milyen listák
+tartalmazzák \pr{a}-t?''
+\begin{query}
+?- tartalmaz(a, L).
+\end{query}
+Erre a következő (jellegű) megoldásokat kapjuk:
+\begin{query}
+L = [a | Maradék]
+L = [X, a | Maradék]
+L = [X1, X2, a | Maradék]
+L = [X1, X2, X3, a | Maradék]
+...
+\end{query}
+Az első egy tetszőleges lista, aminek az első eleme
+\pr{a}; a második egy olyan, aminek a második eleme
+\pr{a} és így tovább.
+
+Feltehetünk összetett kérdéseket is, pl.~milyen
+háromelemű listák vannak, amelyek tartalmazzák az
+\pr{a}, \pr{b} és \pr{c} elemeket?
+\begin{query}
+?- L = [_, _, _], tartalmaz(a, L),
+   tartalmaz(b, L), tartalmaz(c, L).
+L = [a, b, c]
+L = [a, c, b]
+L = [b, a, c]
+L = [c, a, b]
+L = [b, c, a]
+L = [c, b, a]
+\end{query}
+
+\subsection*{Összefűzés}
+Két listát össze is tudunk csatolni. Legyen
+\pr{hozzáfűz(L1, L2, L3)} igaz akkor, ha \pr{L1} és
+\pr{L2} egymás után rakva \pr{L3}-at adja, pl.
+\begin{query}
+?- hozzáfűz([a,b,c], [d,e], [a,b,c,d,e]).
+true
+\end{query}
+Ha \pr{L1} üres, akkor \pr{L2} és \pr{L3}
+megegyezik:
+\begin{program}
+hozzáfűz([], L2, L2).
+\end{program}
+Egyébként \pr{L1} első eleme az \pr{L3} első eleme
+lesz; az \pr{L3} maradéka pedig az \pr{L1}
+maradékának és az \pr{L2}-nek az összefűzéséből
+adódik:
+\begin{program}
+hozzáfűz([X|M1], L2, [X|M3]) :- hozzáfűz(M1, L2, M3).
+\end{program}
+\index{\pr{hozzáfűz}}
+
+Annak ellenére, hogy onnan indultunk, hogy hogyan
+lehet két listát összefűzni, a kérdés ismét
+megfordítható, pl.~,,Hogyan lehet egy listát két
+listára osztani?''
+\begin{query}
+?- hozzáfűz(L1, L2, [a,b,c]).
+L1 = [],
+L2 = [a, b, c]
+L1 = [a],
+L2 = [b, c]
+L1 = [a, b],
+L2 = [c]
+L1 = [a, b, c],
+L2 = []
+\end{query}
+
+Vagy: ,,Igaz-e, hogy az \pr{[a,b]} listával kezdődik
+az \pr{[a,b,c]} lista?''
+\begin{query}
+?- hozzáfűz([a,b], _, [a,b,c]).
+true
+\end{query}
+
+Megkereshetjük vele egy listában az előző és
+következő elemet:
+\begin{query}
+?- hozzáfűz(_, [Előző, már, Következő | _],
+   [jan, feb, már, ápr, máj, jún,
+    júl, aug, szep, okt, nov, dec]).
+Előző = feb,
+Következő = ápr
+\end{query}
+
+A \pr{tartalmaz} szabályt is leírhatjuk a
+segítségével:
+\begin{program}
+tartalmaz(X, L) :- hozzáfűz(_, [X|_], L).
+\end{program}
+Szavakban: egy \pr{L} lista akkor tartalmaz egy
+\pr{X} elemet, ha szétválasztható két listára,
+amiből a másodiknak az első eleme \pr{X}. (Az első
+lista ill.~a második maradéka is lehet üres.)
+
+\subsection*{Hozzáadás és törlés}
+Új elemet egy lista elejéhez olyan könnyű hozzáadni,
+hogy erre nem is szokás külön szabályt írni, de ha
+akarunk, itt van:
+\begin{program}
+hozzáad(X, L, [X|L]).
+\end{program}
+A listák végére (hatékonyan!) beszúrni kicsit
+bonyolultabb, majd később lesz róla szó.
+
+Hogyan kell törölni egy elem egy előfordulását egy
+listából?
+\begin{program}
+töröl(X, [X|M], M).
+töröl(X, [Y|M], [Y|M1]) :- töröl(X, M, M1).
+\end{program}
+\index{\pr{töröl}}
+Tehát: ha \pr{X} a lista első eleme, akkor a törlés
+után a lista maradékát kapjuk. Egyébként a lista
+első eleme és az eredmény első eleme megegyezik, és
+az eredmény maradéka pedig ugyanaz, mint az eredeti
+lista maradéka, amiből kitöröltük az \pr{X}-et.
+
+Egy példa a használatára:
+\begin{query}
+?- töröl(a, [a,b,a,a], L).
+L = [b, a, a]
+L = [a, b, a]
+L = [a, b, a]
+\end{query}
+Itt a második és harmadik megoldás azonosnak tűnik,
+de valójában az egyik az eredeti listából az \pr{a}
+elem második, a másik pedig a harmadik előfordulását
+törölte.
+
+Mi történik, ha az ,,eredeti'' listát vesszük
+ismeretlennek?
+\begin{query}
+?- töröl(a, L, [1,2,3]).
+L = [a, 1, 2, 3]
+L = [1, a, 2, 3]
+L = [1, 2, a, 3]
+L = [1, 2, 3, a]
+\end{query}
+Ahogy látszik, a ,,Mi az a lista, amiből ha
+kitörlünk egy \pr{a}-t, akkor \pr{[1,2,3]}-at
+kapunk?'' kérdés egyszerűbben úgy fogalmazható meg,
+hogy ,,Mit kapunk, ha az \pr{[1, 2, 3]} listába
+beleteszünk egy \pr{a}-t?''
+
+Ez van annyira hasznos, hogy adhatunk neki egy új
+nevet:
+\begin{program}
+betesz(X, L, L1) :- töröl(X, L1, L).
+\end{program}
+\index{\pr{betesz}}
+
+A törlés használható kiválasztásra is:
+\begin{query}
+?- töröl(X, [a,b,c], _).
+X = a
+X = b
+X = c
+\end{query}
+
+Ha a törölni kívánt elem nem szerepel a listában, az
+eredmény \pr{false} lesz. Ezt kihasználva ezzel is
+definiálhatjuk a \pr{tartalmaz} szabályt:
+\begin{program}
+tartalmaz(X, L) :- töröl(X, L, _).
+\end{program}
+
+\subsection*{Részlisták}
+Következőnek nézzük meg, hogy mikor része egy lista
+egy másiknak:
+\begin{query}
+?- részlista([c,d,e], [a,b,c,d,e,f]).
+true
+?- részlista([c,e], [a,b,c,d,e,f]).
+false
+\end{query}
+\index{\pr{részlista}}
+
+Ahogy a második példából látszik, itt a ,,részét''
+nem úgy értelmezzük, hogy az első lista minden
+elemét tartalmazza a második (mint egy halmaznál),
+hanem hogy pontosan ugyanolyan sorrendben, más
+elemek közbeékelődése nélkül szerepelnek.
+
+Ez a szabály könnyen megadható a \pr{hozzáfűz}
+segítségével:
+\begin{program}
+részlista(R, L) :-
+    hozzáfűz(_, L1, L), hozzáfűz(R, _, L1).
+\end{program}
+Tehát \pr{R} akkor része \pr{L}-nek, ha valamilyen
+listát elé- és utánafűzve megkapjuk \pr{L}-et. A
+definíció ezt két részletben írja le: az első tag
+azt mondja, hogy az \pr{L} az \pr{L1} listára
+végződik; a második pedig azt, hogy ez az \pr{L1}
+lista az \pr{R}-el kezdődik. A vég kezdete pedig épp
+azt jelenti, hogy \pr{R} valahol belül van
+\pr{L}-ben (vagy valamelyik szélén, ha az itt
+alsóvonással jelölt listák egyike az üres lista).
+
+Szokás szerint nézzük meg, mit kapunk a
+,,fordított'' felhasználásban:
+\begin{query}
+?- részlista(R, [a,b,c]).
+R = []
+R = [a]
+R = [a, b]
+R = [a, b, c]
+R = []
+R = [b]
+R = [b, c]
+R = []
+R = [c]
+R = []
+\end{query}
+Ahogy várható volt, ezzel megkapjuk az \pr{[a,b,c]}
+lista összes részlistáját -- az üreset többször is
+(miért? Tipp: nézd meg a \pr{hozzáfűz(X, \_,
+  [a,b,c])} kimenetét).
+
+\subsection*{Permutációk}
+Két lista akkor \emph{permutációja} vagy átrendezése
+egymásnak, ha ugyanazokat az elemeket
+tartalmazzák. Az üres listának csak az üres lista a
+permutációja:
+\begin{program}
+permutáció([], []).
+\end{program}
+Ha az első lista nem üres, akkor visszavezethetjük a
+feladatot az eggyel rövidebb listákra:
+\begin{program}
+permutáció([X|M], P) :-
+    permutáció(M, L), betesz(X, L, P).
+\end{program}
+\index{\pr{permutáció}}
+Tehát úgy kapjuk az első lista permutációját, hogy
+vesszük a maradék (\pr{M}) egy permutációját
+(\pr{L}), és ebbe betesszük az \pr{X}-et.
+
+Egy másik logika az lehet, hogy kiválasztunk
+(kitörlünk) egy elemet, a maradéknak vesszük egy
+permutációját, és az elejáre beszúrjuk a kitörölt
+elemet:
+\begin{program}
+permutáció(L, [X|P]) :-
+    töröl(X, L, M), permutáció(M, P).
+\end{program}
+
+Ellenőrizzük, hogy működik-e! A
+\begin{query}
+?- permutáció([piros, zöld, kék], P).
+\end{query}
+kérdésre mindkettő visszaadja mind a 6 jó megoldást
+(bár különböző sorrendben) és közli, hogy nincs
+több. Viszont a fordított
+\begin{query}
+?- permutáció(P, [piros, zöld, kék]).
+\end{query}
+esetben az első verzió a 6 megoldás után végtelen
+rekurzióba kerül, a másodiknál pedig már az első
+után beragad. Meg lehet oldani, hogy mindig jó
+legyen, csak kicsit ki kell egészíteni, de mivel
+szimmetrikus, nincs rá igazán szükség.
+
+\begin{problem}
+Írjatok egy szabályt, amivel ki lehet venni egy
+listából az utolsó 3 elemet!
+\begin{query}
+?- kivesz3([a,b,c,d,e], [a,b]).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, amivel ki lehet venni egy
+listából az első és utolsó 3 elemet!
+\begin{query}
+?- kivesz33([a,b,c,d,e,f,g], [d]).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, amivel megkaphatjuk egy lista
+utolsó elemét! Készítsetek két verziót, egyet
+\pr{hozzáfűz}zel, egyet anélkül!
+\begin{query}
+?- utolsó([a,b,c], c).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjátok meg a \pr{páros\_hosszú(L)} és
+\pr{páratlan\_hosszú(L)} szabályokat! Ezek akkor
+igazak, amikor az \pr{L} lista páros- ill.~páratlan
+számú elemből áll (nincs szükség számokra hozzá).
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, ami megállapítja, hogy két
+lista megfordítottja-e egymásnak!
+\begin{query}
+?- fordított([a,b,c], X).
+X = [c,b,a]
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, ami megállapítja, hogy egy szó
+\emph{palindróma}-e, azaz visszafele is ugyanaz-e!
+\begin{query}
+?- palindróma([g,ö,r,ö,g]).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, amivel egy listát eggyel
+,,elforgathatunk'' úgy, hogy az első lista első eleme
+a második végére kerül!
+\begin{query}
+?- forgat([a, b, c, d], [b, c, d, a]).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, ami a részhalmazságot
+vizsgálja! Le is lehessen vele generálni az összes
+részhalmazt! (A halmaz itt egy olyan rendezett
+lista, amiben minden elem egyszer fordul elő.)
+\begin{query}
+?- részhalmaz([a, b, c], R).
+R = [a, b, c]
+R = [a, b]
+R = [a, c]
+R = [a]
+R = [b, c]
+R = [b]
+R = [c]
+R = []
+\end{query}
+(Az eredmény lehet más sorrendben.)
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, amivel ellenőrizhető, hogy két
+lista ugyanolyan hosszú!
+\begin{query}
+?- ugyanolyan_hosszú([1, 2, 3], [a, b, c]).
+true
+\end{query}
+\end{problem}
+\begin{problem}
+Írjatok egy szabályt, amivel ki lehet ,,lapítani''
+egy listát, tehát a belső listák elemeit kiviszi a
+legkülső szintre:
+\begin{query}
+?- lapít([a, b, [c, d], [], [[[e]]], f], L).
+L = [a, b, c, d, e, f]
+\end{query}
+\end{problem}
 \section{Projekt: Dobble Kids}
-Blabla
+A Dobble Kids társasjáték 30 kártyából áll, ahol
+minden kártyán 6 különböző állat szerepel (összesen
+31 fajtából), amelyekre az az érdekes tulajdonság
+teljesül, hogy bármely két lapon pontosan egy azonos
+állat van.
+\begin{figure}[ht]
+\begin{center}
+\includegraphics[width=\textwidth]{images/dobble-kids.jpg}
+\end{center}
+\end{figure}
+Egy ilyen kártyapakli generálása nem könnyű feladat,
+és nagyon szép matematika van a hátterében. Meg
+lehet mutatni, hogy ha egy lapon $k$ állat van,
+akkor összesen $k(k-1)+1$ különböző kártya
+készíthető. Viszont $k = 6$ esetén ez 31, nem 30,
+tehát van egy olyan lap, amit még hozzá lehetne
+venni a paklihoz, hogy a tulajdonság továbbra is
+fennálljon. Keressük meg ezt a lapot!
+
+Először is készítsük el a pakliban levő kártyák
+listáját! Minden kártya állatok listája, tehát a
+pakli listák listája lesz:
+\begin{program}
+lapok([[bagoly,bálna,hal,kacsa,rák,tehén],
+       [bagoly,bárány,elefánt,polip,teknős,teve],
+       [bagoly,béka,delfin,gorilla,kígyó,kutya],
+       [bagoly,cápa,cica,kakas,nyuszi,pingvin],
+       [bagoly,katica,kenguru,krokodil,tigris,zebra],
+       [bagoly,ló,medve,oroszlán,papagáj,víziló],
+       [bálna,bárány,cica,delfin,kenguru,papagáj],
+       [bálna,béka,cápa,ló,teknős,zebra],
+       [bálna,elefánt,kutya,nyuszi,oroszlán,tigris],
+       [bálna,gorilla,kakas,krokodil,medve,teve],
+       [bálna,katica,kígyó,pingvin,polip,víziló],
+       [bárány,béka,kacsa,kakas,katica,oroszlán],
+       [bárány,cápa,gorilla,hal,tigris,víziló],
+       [bárány,kígyó,krokodil,ló,nyuszi,tehén],
+       [bárány,kutya,medve,pingvin,rák,zebra],
+       [béka,cica,elefánt,krokodil,rák,víziló],
+       [béka,hal,kenguru,medve,nyuszi,polip],
+       [béka,papagáj,pingvin,tehén,teve,tigris],
+       [cápa,delfin,elefánt,katica,medve,tehén],
+       [cápa,kacsa,krokodil,kutya,papagáj,polip],
+       [cápa,kenguru,kígyó,oroszlán,rák,teve],
+       [cica,gorilla,oroszlán,polip,tehén,zebra],
+       [cica,kacsa,kígyó,medve,teknős,tigris],
+       [delfin,hal,krokodil,oroszlán,pingvin,teknős],
+       [delfin,kacsa,nyuszi,teve,víziló,zebra],
+       [delfin,kakas,ló,polip,rák,tigris],
+       [elefánt,gorilla,kacsa,kenguru,ló,pingvin],
+       [elefánt,hal,kakas,kígyó,papagáj,zebra],
+       [gorilla,katica,nyuszi,papagáj,rák,teknős],
+       [kakas,kenguru,kutya,tehén,teknős,víziló]]).
+\end{program}
+
+Szintén hasznos lehet az összes állat listája:
+\begin{program}
+állatok([bagoly,bálna,bárány,béka,cápa,cica,delfin,
+         elefánt,gorilla,hal,kacsa,kakas,katica,
+         kenguru,kígyó,krokodil,kutya,ló,medve,
+         nyuszi,oroszlán,papagáj,pingvin,polip,rák,
+         tehén,teknős,teve,tigris,víziló,zebra]).
+\end{program}
+
+Ha most ezekből az állatokból egy kártyát szeretnék
+képezni, akkor annak két dolgot kell teljesítenie:
+(i) 6 elemből kell állnia, és (ii) az állat-lista
+részhalmazának kell lennie. Az alábbi szabály az
+\pr{A} listából választ ki 6 különböző elemet:
+\begin{program}
+választ6(A, L) :-
+    L = [_, _, _, _, _, _],
+    részhalmaz(A, L).
+\end{program}
+
+A \pr{részhalmaz} szabály feladatként fel volt adva;
+az alábbi verzió feltételezi, hogy az elemek azonos
+sorrendben fordulnak elő (tehát nincs olyan elempár,
+ami a két listában fordított sorrendben
+szerepelne). Ez a megkötés, mivel most úgy
+használjuk, hogy a részhalmaz elemei változók, azt
+vonja maga után, hogy a keletkező részhalmazban az
+elemek olyan sorrendben lesznek, mint ahogy a
+teljesben szerepeltek.
+\begin{program}
+részhalmaz([], []).
+részhalmaz([X|M], [X|R]) :- részhalmaz(M, R).
+részhalmaz([_|M], R) :- részhalmaz(M, R).
+\end{program}
+\index{\pr{részhalmaz}}
+Az üres halmaznak csak az üres halmaz a
+részhalmaza. Egyébként úgy kapunk meg egy
+részhalmazt, hogy az első elemet (\pr{X}) vagy
+hozzáadjuk (2.~sor), vagy nem adjuk hozzá (3.~sor) a
+maradék (\pr{M}) egy részhalmazához (\pr{R}).
+
+A következő feladatunk, hogy ha készítettünk egy
+lapot, akkor eldöntsük, hogy jó-e. Ezt úgy tudjuk
+megtenni, hogy összehasonlítjuk a többi lappal
+egyenként, és megnézzük, hogy az állat-halmazok
+metszete 1-elemű-e:
+\begin{program}
+jó_lap([], _).
+jó_lap([L|M], X) :- metszet(X, L, [_]), jó_lap(M, X).
+\end{program}
+Itt az első argumentum a többi kártya listája; ha ez
+üres, az azt jelenti, hogy minden kártyát
+leteszteltünk, készen vagyunk. Egyébként megnézzük,
+hogy az aktuális kártyára a metszet 1-elemű-e (hogy
+mi ez az elem, az nem érdekes), és még ellenőrizni
+kell a maradékra is.
+
+A metszet számítása van még hátra:
+\begin{program}
+metszet([], _, []).
+metszet([X|L1], L2, [X|L3]) :-
+    tartalmaz(X, L2), metszet(L1, L2, L3).
+metszet([X|L1], L2, L3) :-
+    nemtartalmaz(X, L2), metszet(L1, L2, L3).
+\end{program}
+Az üres halmaz metszete bármivel üres. Ha az első
+elem (\pr{X}) szerepel a másik halmazban (\pr{L2}),
+akkor benne lesz a metszetben is; különben nem.
+
+Azt, hogy egy elem \emph{nincs benne} egy listában,
+a \pr{nemtartalmaz} fejezi ki:
+\begin{program}
+nemtartalmaz(_, []).
+nemtartalmaz(X, [Y|M]) :- X \= Y, nemtartalmaz(X, M).
+\end{program}
+
+Ezzel minden megvan már, csak össze kell rakni a
+darabokat:
+\begin{program}
+megoldás(X) :-
+    állatok(A), lapok(L),
+    választ6(A, X), jó_lap(L, X).
+\end{program}
+Röviden: kiválasztunk 6 állatot úgy, hogy az így
+készült kártya jó legyen a pakli minden lapjához.
+
+Ha kipróbáljuk, kicsit hosszabb gondolkodás után
+megkapjuk a megoldást:
+\begin{query}
+?- megoldás(X).
+X = [cica, hal, katica, kutya, ló, teve]
+\end{query}
+
+Ezen a programon is sokat tudunk majd
+javítani. Magasabb rendű szabályokkal kényelmesen le
+lehet generálni az \pr{állatok} listát, és nem kell
+kézzel megadni; valamint a \pr{nemtartalmaz}ra nem
+lesz szükség, ha megtanuljuk a \emph{vágásokat}.
