@@ -88,7 +88,7 @@ pontos szabályai, egyelőre azt jegyezzük meg, hogy
 minden \emph{konkrét} dolog kisbetűvel írandó, és
 nem lehet benne szóköz.
 
-\begin{infobox}{.75}{Mohamed családfája}
+\begin{infobox}{}{Mohamed családfája}
 A programban a családfának csak egy nagyon kis
 szeletét használtuk, és még ezen a részen belül
 sem tartalmaz minden kapcsolatot, mert pl.~Ali
@@ -222,12 +222,12 @@ akkor \pr{false} választ kapunk.
 
 \begin{problem}
 Válaszold meg az alábbi kérdéseket!
-\begin{enumerate}
-\item \pr{?- szülő(huszajn, X).}
-\item \pr{?- szülő(X, huszajn).}
-\item \pr{?- szülő(ámna, X), szülő(X, fátima).}
-\item \pr{?- szülő(ámna, X), szülő(X, Y), szülő(Y, haszan).}
-\end{enumerate}
+\begin{query}
+?- szülő(huszajn, X).
+?- szülő(X, huszajn).
+?- szülő(ámna, X), szülő(X, fátima).
+?- szülő(ámna, X), szülő(X, Y), szülő(Y, haszan).
+\end{query}
 \end{problem}
 \begin{problem}
 Fogalmazd meg Prologban!
@@ -580,7 +580,7 @@ térkép(DE, CH, IT, PL, CZ, AT, SI, HR, SK, HU) :-
     t(SK, HU).
 \end{program}
 
-\begin{infobox}{0.75}{a négyszín-tétel}
+\begin{infobox}{}{a négyszín-tétel}
 Ez volt az első olyan matematikai tétel, amelynek
 bizonyítását számítógéppel adták meg, és ezért sok
 matematikus kezdetben nem is fogadta el

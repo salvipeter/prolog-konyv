@@ -30,7 +30,7 @@ majd később lesz szó; a harmadikat pedig jellemzően
 akkor használjuk, ha nagybetűvel kezdődő vagy
 szóközt tartalmazó nevet szeretnénk adni (ritka).
 
-\begin{infobox}{0.75}{foo--bar--baz}
+\begin{infobox}{}{foo--bar--baz}
 A programozók előszeretettel használják a \pr{foo},
 \pr{bar} és \pr{baz} neveket, amikor valamilyen
 példát mutatnak, ahol maga a név nem
@@ -166,7 +166,7 @@ bennük levő változókat be lehet úgy állítani, hogy
 azonossá váljanak. Például a \pr{dátum(Év,Hónap,22)}
 és a \pr{dátum(X,március,Y)} kifejezések
 egyesíthetőek, ezt az \pr{=} segítségével tudjuk
-ellenőrizni:\index{egyesítés}
+ellenőrizni:\index{egyesítés}\index{\pr{=}}
 \begin{query}
 ?- dátum(Év,Hónap,22) = dátum(X,március,Y).
 Hónap = március,
@@ -183,7 +183,7 @@ mivel a harmadik argumentum különböző; a
 \pr{dátum(X,Y,Z)} és \pr{pont(X,Y,Z)} kifejezések
 pedig azért nem, mert más a legkülső
 (\emph{elsődleges}) funktoruk.
-\index{elsődleges funktor}
+\index{funktor!elsődleges}
 
 Valójában a fenti egyenlőség végtelen sok más módon
 is kielégíthető, pl.
