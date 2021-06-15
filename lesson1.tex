@@ -430,7 +430,6 @@ Fordítsd le Prologra!
 \end{problem}
 
 \section{Rekurzív szabályok}
-
 Adjunk még egy utolsó szabályt a programunkhoz: az
 \emph{ős} fogalmát. Valakinek az őseit úgy kapjuk
 meg, hogy felfelé megyünk a családfában: ős a szülő,
@@ -455,6 +454,9 @@ hogy ha X gyereke őse Z-nek, akkor X is őse Z-nek:
 \begin{program}
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{program}
+Az \pr{ős} így önmagára hivatkozik, más szóval
+\emph{rekurzív}.\index{rekurzió}
+
 Ez így magában még azonban nem elég, mert így ahhoz,
 hogy valaki ős legyen, mindig valaki másnak is ősnek
 kéne lennie, valahol ennek meg kéne állnia. Elég
