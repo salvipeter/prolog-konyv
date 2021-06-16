@@ -1,11 +1,513 @@
+% -*- fill-column: 52 -*-
+% (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
 \chapter{Haladó technikák}
+Ebben a leckében ...
+
 \section{Különbség-listák}
-Blabla
-\section{Struktúrák kezelése}
-Blabla
+Listákat lehet két lista különbségeként ábrázolni,
+így pl.~az \pr{[1,2,3]} lista leírható úgy, mint az
+\pr{[1,2,3,8]} és \pr{[8]} listák különbsége, vagy
+az \pr{[1,2,3]} és \pr{[]} listáké, vagy általánosan
+az \pr{[1,2,3|M]} és \pr{M} különbségeként. A két
+tagot összekapcsolhatjuk pl.~a \pr{-} operátorral:
+\pr{[1,2,3|M]-M}.
+
+Ennek az ábrázolásnak nagy előnye, hogy közvetlenül
+tudunk hivatkozni a lista végére, ezért bizonyos
+műveleteket sokkal hatékonyabban meg lehet
+valósítani a segítségükkel, mint ha csak sima
+listákat használnánk.
+
+Egy egyszerű példa erre a hozzáfűzés:
+\begin{program}
+hozzáfűz_kl(X-Y, Y-Z, X-Z).
+\end{program}
+Ehhez persze az kell, hogy argumentumként
+különbség-listákat kapjon:
+\begin{query}
+?- hozzáfűz_kl([a,b,c|M]-M, [1,2]-[], L-[]).
+M = [1, 2],
+L = [a, b, c, 1, 2]
+\end{query}
+
+Mi is történik itt pontosan? Legjobban talán akkor
+látszik, ha a 3.~leckében a listák bevezetésénél
+használt prefix jelöléssel írjuk fel:
+\begin{query}
+?- hozzáfűz_kl(lista(a, lista(b, lista(c, M)))-M,
+               lista(1, lista(2, vége))-vége,
+               L-vége).
+\end{query}
+A szabály alapján az \pr{M} és \pr{lista(1, lista(2,
+  vége))} egyesül, tehát a \pr{hozzáfűz\_kl}
+szabályban szereplő \pr{X} értéke
+\begin{query}
+lista(a, lista(b, lista(c, lista(1, lista(2, vége)))))
+\end{query}
+lesz, ami éppen a két lista összefűzése. Ugyanez
+többszörös összefűzésre is használható, pl.
+\begin{query}
+?- hozzáfűz_kl([a,b|M1]-M1, [c,d|M2]-M2, L-M),
+   hozzáfűz_kl(L-M, [e,f|M3]-M3, X-[]).
+L = X, X = [a, b, c, d, e, f],
+M = M2, M2 = [e, f],
+M1 = [c, d, e, f],
+M3 = []
+\end{query}
+
+A hozzáfűzésnek ezt a módját -- mivel annyira
+egyszerű -- nem szokás így külön szabályként
+felírni, hanem általában a programba közvetlenül
+építik be, ahogy azt mindjárt látni fogjuk a
+gyorsrendezésnél.
+
+\subsection*{Gyorsrendezés}
+Az előző leckében látott gyorsrendezés is sokkal
+hatékonyabbá tehető ezzel a technikával. Eredetileg
+így nézett ki:
+\begin{program}
+rendez2([], []).
+rendez2([X|M], Y) :-
+    szétoszt(X, M, Kicsi, Nagy),
+    rendez2(Kicsi, K),
+    rendez2(Nagy, N),
+    hozzáfűz(K, [X|N], Y).
+\end{program}
+Írjuk át különbség-listák használatával!
+\begin{program}
+rendez2(X, Y) :- rendez2_kl(X, Y-[]).
+
+rendez2_kl([], X-X).
+rendez2_kl([X|M], Y-Z) :-
+    szétoszt(X, M, Kicsi, Nagy),
+    rendez2_kl(Kicsi, Y-[X|Y1]),
+    rendez2_kl(Nagy, Y1-Z).
+\end{program}
+Látszik, hogy itt már nincsen szükség hozzáfűzésre,
+a két rekurzív hívás eleve ,,jó helyre'' készíti a
+megoldásait. Ezért a varázslatért a változók
+egyesítése a felelős.
+
+\subsection*{Lista megfordítása}
+A \pr{fordított} szabállyal már találkoztunk a
+3.~lecke egyik feladatában. Egy lehetséges megoldás
+a következő:
+\begin{program}
+fordított1([], []).
+fordított1([X|M], Y) :-
+    fordított1(M, M1), hozzáfűz(M1, [X], Y).
+\end{program}
+Ez így nem túl hatékony. Ezt is megpróbálhatjuk
+vég-rekurziós formára hozni egy plusz
+(ún.~\emph{akkumulátor}) argumentum segítségével:
+\index{akkumulátor}\index{\pr{fordított}}
+\begin{program}
+fordított2(X, Y) :- fordított2(X, [], Y).
+
+fordított2([], Y, Y).
+fordított2([X|M], F, Y) :- fordított2(M, [X|F], Y). 
+\end{program}
+
+Egy másik lehetőség, hogy különbség-listákat
+használunk:
+\begin{program}
+fordított3(X, Y) :- fordított_kl(X, Y-[]).
+
+fordított_kl([], X-X).
+fordított_kl([X|M], Y-Z) :- fordított_kl(M, Y-[X|Z]).
+\end{program}
+
+Ha most összehasonlítjuk a két megoldást, látszik,
+hogy a kettő lényegében megegyezik, csak a
+vég-rekurziós változat harmadik és második
+paraméterét összevontuk egy különbség-listává.
+
+\begin{problem}
+Írjátok át a 3.~lecke feladatai közt szereplő
+\pr{lapít} szabályt hatékonyabbra különbség-listák
+használatával!
+\end{problem}
+\begin{problem}
+Oldjátok meg Dijkstra \emph{holland zászló}
+problémáját: piros, fehér és kék színű elemek
+listáját rendezzétek át úgy, hogy a piros elemek
+után jöjjenek a fehérek, és végül a kékek, de ezen
+belül a sorrendjük ne változzon! Például:
+\begin{query}
+?- holland([piros(alma),fehér(fal),kék(tenger),
+            piros(paprika),fehér(holló)], X).
+X = [piros(alma), piros(paprika), fehér(fal),
+     fehér(holló), kék(tenger)]
+\end{query}
+A megoldáshoz használjatok különbség-listákat!
+\end{problem}
+
+\begin{infobox}{}{Dijkstra}
+Edsger W.~Dijkstra (1930-2002) nevét legtöbben a
+\emph{Dijkstra-algoritmus} kapcsán ismerik. Ez egy
+úthálózatban (súlyozott gráfban) megkeresi két pont
+között a legrövidebb utat.\index{Dijkstra}
+\end{infobox}
+
+\section{Kifejezések vizsgálata}
+Egy kifejezés típusának megvizsgálására a következő
+beépített szabályok adottak:
+\begin{itemize}
+\item \pr{var(X)} : \pr{X} változó (és nincs értéke)
+\item \pr{nonvar(X)} : \pr{X} nem változó vagy van értéke
+\item \pr{atom(X)} : \pr{X} atom
+\item \pr{number(X)} : \pr{X} szám
+  \begin{itemize}
+    \item \pr{integer(X)} : \pr{X} egész szám
+    \item \pr{float(X)} : \pr{X} valós szám
+  \end{itemize}
+\item \pr{atomic(X)} : \pr{X} atom vagy szám
+\item \pr{compound(X)} : \pr{X} összetett struktúra
+\end{itemize}
+\index{\pr{var}}\index{\pr{nonvar}}
+\index{\pr{atom}}\index{\pr{number}}
+\index{\pr{integer}}\index{\pr{float}}
+\index{\pr{atomic}}\index{\pr{compound}}
+Egy struktúra ezen kívül szétszedhető az elemeinek
+listájára (fej + argumentumok), illetve
+visszaépíthető ezekből az \pr{=..} segítségével:
+\index{\pr{=..}}
+\begin{query}
+?- f(a,b,c) =.. X.
+X = [f, a, b, c]
+?- X =.. [f, a, b, c].
+X = f(a,b,c)
+\end{query}
+
+A funktort és aritást, illetve az egyes
+argumentumokat külön is le lehet kérdezni a
+\pr{functor} ill. \pr{arg} használatával:
+\index{\pr{functor}}\index{\pr{arg}}
+\begin{query}
+?- functor(f(a,b,c), F, N).
+F = f,
+N = 3
+?- arg(1, f(a,b,c), X).
+X = a
+?- arg(2, f(a,b,c), X).
+X = b
+\end{query}
+Ezeknek a segítségével a struktúrákat tudjuk fix
+hosszú \emph{tömbökként} kezelni, tehát olyan
+adattárolókként, amelyeknek tetszőleges eleme
+hatékonyan elérhető (ellentétben a listákkal, ahol
+az $n$-edik elem eléréséhez előbb végig kell mennünk
+az összes előtte levőn).\index{tomb@tömb}
+Például a
+\begin{query}
+?- functor(T, t, 10), arg(5, T, 42)
+\end{query}
+hatására a \pr{T} egy olyan 10-elemű tömb lesz,
+aminek az 5.~eleme a 42.
+
+\subsection*{Csere}
+Hogyan lehetne ezek segítségével megoldani a
+következő feladatot: egy kifejezésben egy másik
+(al)kifejezés minden előfordulását le akarjuk
+cserélni valami másra. Például:
+\begin{query}
+?- lecserél(sin(x), t, 2*sin(x)*f(sin(x)), F).
+F = 2*t*f(t)
+\end{query}
+Itt az ,,előfordulás'' egyesíthetőséget jelent,
+tehát
+\begin{query}
+?- lecserél(a+b, v, f(a,A+B), F).
+A = a,
+B = b,
+F = f(a, v)
+\end{query}
+
+Három eset van:
+\begin{enumerate}
+\item A kifejezés és a lecserélendő alkifejezés
+  megegyezik -- az egészet cseréljük.
+\item A kifejezés atom/szám -- nincs mit csinálni.
+\item A kifejezés egy struktúra; az argumentumaira
+  kell elvégezni a cserét.
+\end{enumerate}
+Ez alapján a három szabály:
+\begin{program}
+lecserél(X, Y, X, Y) :- !.
+lecserél(_, _, Z, Z) :- atomic(Z), !.
+lecserél(X, Y, Z, Z1) :-
+    Z =.. [F|Arg],
+    mindent_lecserél(X, Y, Arg, Arg1),
+    Z1 =.. [F|Arg1].
+\end{program}
+A \pr{mindent\_lecserél} szabály egy lista minden
+elemére elvégzi a cserét:
+\begin{program}
+mindent_lecserél(_, _, [], []).
+mindent_lecserél(X, Y, [Z|M], [Z1|M1]) :-
+    lecserél(X, Y, Z, Z1),
+    mindent_lecserél(X, Y, M, M1).
+\end{program}
+Ennek segítségével készíthetünk függvénykiértékelőt:
+\begin{query}
+?- kiértékel(x*sin((x+y)/2), [x=1,y=2.14], X).
+X = 0.9999996829318346
+\end{query}
+A második argumentumban \pr{Szimbólum = szám}
+alakban vannak megadva a helyettesítési értékek.
+\begin{program}
+kiértékel(K, L, X) :- behelyettesít(K, L, K1), X is K1.
+
+behelyettesít(K, [], K).
+behelyettesít(K, [A=N|M], K2) :-
+    lecserél(A, N, K, K1),
+    behelyettesít(K1, M, K2).
+\end{program}
+
+\begin{problem}
+(*) Írjatok szabályt, ami egy összeadásokat
+  tartalmazó kifejezést egyszerűsít úgy, hogy az
+  ismeretleneket (ha lehet) összevonja és előre
+  rakja, a többi összeadást pedig elvégzi!
+\begin{query}
+?- egyszerűsít(1+1+a, E).
+E = a+2
+?- egyszerűsít(1+a+4+2+b+c, E).
+E = a+b+c+7
+?- egyszerűsít(3+x+x, E).
+E = 2*x+3
+\end{query}
+\end{problem}
+\begin{problem}
+(*) Írjatok szabályt, ami eldönti, hogy egy
+  kifejezés általánosabb-e egy másiknál!
+\begin{query}
+?- általánosabb(X, c).
+true
+?- általánosabb(g(X), g(t(Y))).
+true
+?- általánosabb(f(X,X), f(a,b)).
+false
+\end{query}
+(Feltehetjük, hogy a két kifejezés nem tartalmazza
+ugyanazt a változót.)
+\end{problem}
+
 \section{Magasabb rendű szabályok}
-Blabla
+Vannak olyan szabályok, amelyek argumentumként egy
+másik szabályt (célt, kérdést) várnak. Ilyen volt
+például a tagadás, de van még néhány másik is.
+
+\subsection*{Listakezelés}
+Egy nagyon hasznos szabály a \pr{maplist}, ami egy
+lista összes elemére megnézi, hogy teljesít-e egy
+adott szabályt, pl.
+\index{\pr{maplist}}
+\begin{query}
+?- maplist(number, [3,4,5]).
+true
+?- maplist(number, [3,a,5]).
+false
+\end{query}
+A szabály lehet többargumentumú is, ilyenkor több
+listát kell megadni, egyet minden argumentumhoz. A
+\pr{mindent\_lecserél} például megfogalmazható így:
+\begin{program}
+mindent_lecserél(X, Y, Z, Z1) :-
+    maplist(lecserél(X, Y), Z, Z1).
+\end{program}
+Itt a \pr{lecserél} első két argumentumát előre
+megadtuk, a maradék kettőt a \pr{Z} és \pr{Z1}
+listákból veszi ki.
+
+\subsection*{Összes megoldás}
+Gyakran előfordul, hogy az összes megoldásra
+kíváncsiak vagyunk. Ilyenkor ezeket egy listában le
+lehet kérni a \pr{bagof} (,,zsákja''), \pr{setof}
+(,,halmaza'') vagy \pr{findall} (,,összeset
+keresd'') segítségével. Nézzük meg sorban őket!
+
+A \pr{bagof(X, P, L)} megkeresi az összes olyan
+\pr{X}-et, amire \pr{P} igaz, és \pr{L} ezeknek a
+listája. Például:
+\index{\pr{bagof}}
+\begin{program}
+életkor(lica, 11).
+életkor(mimi, 10).
+életkor(dusa, 5).
+életkor(zsófi, 5).
+életkor(juli, 2).
+\end{program}
+\begin{query}
+?- bagof(X, életkor(X, 5), L).
+L = [dusa, zsófi]
+?- bagof(X, életkor(X, _), L).
+L = [juli]
+\end{query}
+További megoldásokként megkapjuk életkorok szerint
+csoportosítva a többi gyereket is. Ha azt
+szeretnénk, hogy egyszerre az összes gyereket
+megkapjuk, akinek ismert az életkora (és nem csak
+azokat, akiknek azonos), akkor erre egy speciális
+jelölést kell használni:
+\begin{query}
+?- bagof(X, N^életkor(X, N), L).
+L = [lica, mimi, dusa, zsófi, juli]
+\end{query}
+Az \pr{N\textasciicircum} itt azt jelenti, hogy
+,,van olyan \pr{N}, amire igaz, hogy \dots''.
+
+A \pr{setof} nagyon hasonló ehhez, de az azonos
+elemekből csak egyet tart meg, például:
+\index{\pr{setof}}
+\begin{query}
+?- bagof(N, X^életkor(X, N), L).
+L = [11, 10, 5, 5, 2]
+?- setof(N, X^életkor(X, N), L).
+L = [2, 5, 10, 11]
+\end{query}
+
+Végül a \pr{findall} olyan, mint a \pr{bagof},
+amikor a kifejezés egy változójának értéke sincs
+lekötve, tehát mintha minden (nem keresett) \pr{V}
+változóhoz oda lenne írva a
+\pr{V\textasciicircum}. Például:
+\index{\pr{findall}}
+\begin{query}
+?- bagof(X, N^életkor(X, N), L).
+L = [lica, mimi, dusa, zsófi, juli]
+?- findall(X, életkor(X, _), L).
+L = [lica, mimi, dusa, zsófi, juli]
+\end{query}
+
+\begin{problem}
+Írjatok szabályt, ami a \pr{bagof} segítségével
+megkeresi egy halmaz (lista) összes részhalmazát!
+\end{problem}
+
+\section{Dinamikus szabályok}
+Szabályokat a program futása közben automatikusan is
+hozzá lehet adni az adatbázishoz, illetve ki lehet
+venni belőle. Ha a szabály már létezik, akkor ehhez
+az kell, hogy \emph{dinamikusnak} legyen beállítva,
+pl.:
+\index{\pr{dynamic}}
+\begin{program}
+:- dynamic foo/2. % 2 aritású
+\end{program}
+Ezután az alábbi módon lehet a \pr{foo} szabályait
+módosítani:
+\begin{itemize}
+\item \pr{asserta(foo([], \_))} : az adatbázis
+  elejére teszi a \pr{foo([], \_).} tényt.
+\item \pr{assertz(foo(X, Y) :- X > Y)} : az
+  adatbázis végére teszi a \pr{foo(X, Y) :- X > Y.}
+  szabályt.
+\item \pr{retract(foo([], \_))} : törli a
+  \pr{foo([], \_).} tényt.
+\item \pr{retractall(foo(\_,\_))} : törli az összes
+  szabályt, aminek a feje egyesíthető a
+  \pr{foo(\_,\_)}-val.
+\end{itemize}
+\index{\pr{asserta}}\index{\pr{assertz}}
+\index{\pr{retract}}\index{\pr{retractall}}
+Ezek segítségével például definiálhatjuk magunk is a
+\pr{findall} szabályt:
+\begin{program}
+összes(X, Cél, L) :-
+    Cél, assertz(tároló(X)), fail
+    ; assertz(tároló(nincs_több)), összegyűjt(L).
+
+összegyűjt(L) :-
+    retract(tároló(X)), !,
+    ( X = nincs_több, !, L = []
+    ; L = [X|M], összegyűjt(M)
+    ).
+\end{program}
+\begin{query}
+?- összes(X, életkor(X, _), L).
+L = [lica, mimi, dusa, zsófi, juli]
+\end{query}
+
+Ez a megoldás feltételezi, hogy a \pr{tároló}
+szabály még nem létezett, és hogy a keresett értékek
+közt nem szerepelhet a \pr{nincs\_több} atom. Ezt
+elkerülendő, ezeket a \pr{\$} prefix operátorral
+szokás megkülönböztetni, tehát \pr{tároló(X)}
+helyett \pr{\$tároló(X)} és \pr{nincs\_több} helyett
+\pr{\$nincs\_több} (vagy a zárójelet kiírva
+\pr{\$(tároló(X))} és \pr{\$(nincs\_több)}).
+
+Az önmagát módosító programok megértése nehéz, ezért
+az ilyen jellegű technikákat csak jól elkülönített
+programrészekben ajánlott alkalmazni.
+
 \section{Vezérlés}
-Blabla
+A program folyásának vezérlésére már láttunk néhány
+módszert, mint a vágás (\pr{!}) vagy a mindig igaz
+ill. hamis célok (\pr{true}, \pr{false} /
+\pr{fail}). Itt van néhány további:
+\begin{enumerate}
+\item Ha egy szabály több megoldást is vissza tud
+  adni, de mi csak az elsőt szeretnénk, a vágással
+  le tudjuk tiltani a továbbiakat. Ez elég gyakori
+  ahhoz, hogy van rá egy beépített szabály, a
+  \pr{once} (,,egyszer''):
+  \index{\pr{once}}
+\begin{program}
+once(P) :- P, !.
+\end{program}
+\item Amikor egy \pr{P} változót célként használunk,
+  mint a \pr{once} vagy a tagadás definíciójában,
+  akkor valójában a háttérben a \pr{call(P)}
+  (,,hív'') hívódik meg; ezt időnként ki is írják,
+  hogy egyértelműbb legyen, mi történik. Amikor a
+  \pr{call}-nak több argumentuma van, ezeket a
+  célhoz kapcsolandó további paraméterekként
+  értelmezi, tehát pl.:
+\index{\pr{call}}
+\begin{query}
+?- P = hozzáfűz([a,b]), call(P, [c,d], X), call(P, [x,y], Y).
+P = hozzáfűz([a, b]),
+X = [a, b, c, d],
+Y = [a, b, x, y].
+\end{query}
+\item A \pr{(P -> Q; R)} jelentése: ha \pr{P}, akkor
+  \pr{Q}, különben \pr{R}. Tehát pl.~az alábbi kettő
+  ekvivalens:
+\index{\pr{->}}
+\begin{program}
+implikáció(X) :- foo(X) -> bar(X); baz(X).
+\end{program}   
+és
+\begin{program}
+implikáció(X) :- foo(X), !, bar(X).
+implikáció(X) :- baz(X).
+\end{program}
+\item A felhasználóval való kommunikációhoz gyakran
+  van szükség végtelen ciklusra, ezt segíti a
+  \pr{repeat} (,,ismétel''), amit így lehet
+  definiálni:
+\index{\pr{repeat}}
+\begin{program}  
+repeat.
+repeat :- repeat.
+\end{program}
+Ez tehát mindig igaz, akárcsak a \pr{true}, de ezt
+az igaz értéket végtelenszer generálja. Egy példa a
+használatára az alábbi program, ami a \pr{read}
+segítségével kér be a felhasználótól számokat, és
+kiírja a négyzetüket, egészen amíg \pr{stop}-ot nem
+kap:
+\index{\pr{read}}
+\begin{program}
+négyzetes :-
+    repeat, read(X),
+    ( X = stop, !
+    ; Y is X * X, write(Y), fail
+    ).
+\end{program}
+\end{enumerate}
+
 \section{Projekt: bla}
 Blabla
