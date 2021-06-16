@@ -96,7 +96,22 @@
   A könyv a Creative Commons \emph{Share Alike} licencnek megfelelően
   szabadon terjeszthető.
 \end{center}
-\vspace*{\fill}
+\vfill
+\begin{center}
+\begin{BVerbatim}
+sárkány(N) :- sárkány(N, 'jobbra át').
+
+sárkány(0, _) :- write('lépj egyet'), nl.
+sárkány(N, X) :-
+    N > 0, N1 is N - 1,
+    sárkány(N1, 'jobbra át'),
+    write(X), nl,
+    sárkány(N1, 'balra át').
+
+?- sárkány(14). % 16384 lépés
+\end{BVerbatim}
+\end{center}
+\vfill
 {\footnotesize Ez a könyv \LaTeX-ben készült, Computer Modern betűtípussal.\\
   A borítón egy Lindenmayer-rendszer, az ún.~\emph{sárkány görbe} látható.
 }
