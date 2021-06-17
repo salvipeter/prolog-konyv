@@ -40,7 +40,8 @@ mindent_lecserél(X, Y, [Z|M], [Z1|M1]) :-
     lecserél(X, Y, Z, Z1),
     mindent_lecserél(X, Y, M, M1).
 
-kiértékel(K, L, X) :- behelyettesít(K, L, K1), X is K1.
+kiértékel(K, L, X) :-
+    behelyettesít(K, L, K1), X is K1.
 
 behelyettesít(K, [], K).
 behelyettesít(K, [A=N|M], K2) :-

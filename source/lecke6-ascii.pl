@@ -40,7 +40,8 @@ mindent_lecserel(X, Y, [Z|M], [Z1|M1]) :-
     lecserel(X, Y, Z, Z1),
     mindent_lecserel(X, Y, M, M1).
 
-kiertekel(K, L, X) :- behelyettesit(K, L, K1), X is K1.
+kiertekel(K, L, X) :-
+    behelyettesit(K, L, K1), X is K1.
 
 behelyettesit(K, [], K).
 behelyettesit(K, [A=N|M], K2) :-
