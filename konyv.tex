@@ -7,6 +7,7 @@
 \def\magyarOptions{defaults=hu-min}
 \usepackage[magyar]{babel}
 \addto\captionsmagyar{\renewcommand{\chaptername}{lecke}}
+\usepackage[pdfpagelabels,draft,implicit=false]{hyperref}
 
 \usepackage[dvipsnames]{xcolor}
 \usepackage{amsmath}
@@ -49,9 +50,17 @@
 \newenvironment{infobox}[2]{
   \begin{tcolorbox}[center,
                     float,
-                    floatplacement=ht!,
+                    floatplacement=htp!,
                     fonttitle=\sffamily\bfseries,
                     title={\center Kitérő: \emph{#2}},
+                    width=#1\linewidth]
+  }{
+  \end{tcolorbox}
+}
+\newenvironment{infobox*}[2]{
+  \begin{tcolorbox}[center,
+                    fonttitle=\sffamily\bfseries,
+                    title={\center\emph{#2}},
                     width=#1\linewidth]
   }{
   \end{tcolorbox}

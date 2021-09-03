@@ -6,6 +6,7 @@
 *.ilg
 *.ind
 *.log
+*.out
 *.toc
 *.xwam
 konyv.pdf

@@ -80,19 +80,21 @@ vesszővel elválasztva felsoroljuk a kapcsolatban
 levő dolgokat, és a végén egy ponttal (\pr{.})
 zárjuk.\index{teny@tény}
 
-Talán furcsa lehet, hogy minden kisbetűvel van --
+Talán furcsa lehet, hogy minden kisbetűvel szerepel --
 majd később lesz szó arról, hogy mik az elnevezés
 pontos szabályai, egyelőre azt jegyezzük meg, hogy
 minden \emph{konkrét} dolog kisbetűvel írandó, és
 nem lehet benne szóköz.
 
-\begin{infobox}{.75}{Mohamed családfája}
+\begin{infobox}{}{Mohamed családfája}
 A programban a családfának csak egy nagyon kis
 szeletét használtuk, és még ezen a részen belül
 sem tartalmaz minden kapcsolatot, mert pl.~Ali
 Fátima halála után feleségül vette Umámát is.
 
-\includegraphics[width=\textwidth]{images/prophet-family.jpg}
+\begin{center}
+  \includegraphics[width=.75\textwidth]{images/prophet-family.jpg}
+\end{center}
 \end{infobox}
 
 \subsection*{Egyszerű kérdések}
@@ -120,7 +122,7 @@ Egy kicsit érdekesebb a következő kérdés:
 \end{query}
 Erre azt a feleletet kapjuk, hogy \pr{Kicsoda =
   fátima}. Ha további válaszokat kérünk, akkor még
-azt is kiírja alá, hogy \pr{Kicsoda = zajnab}.
+azt is megmondja, hogy \pr{Kicsoda = zajnab}.
 
 Mi történt itt? Azáltal, hogy a második helyre egy
 nagybetűs szót (\pr{Kicsoda}) írtunk, azt mondtuk,
@@ -179,11 +181,11 @@ vesszővel választjuk el:
 Négy megoldást is kapunk:
 \begin{query}
 Unoka = huszajn,
-Valaki = fátima
+Valaki = fátima ;
 Unoka = muhszin,
-Valaki = fátima
+Valaki = fátima ;
 Unoka = haszan,
-Valaki = fátima
+Valaki = fátima ;
 Unoka = umáma,
 Valaki = zajnab
 \end{query}
@@ -191,7 +193,9 @@ Valaki = zajnab
 Huszajn, Muhszin és Haszan, és Zajnabtól Umáma.)
 
 Ez azért működik, mert egy változónak minden
-előfordulása azonos értéket kell, hogy kapjon.
+előfordulása azonos értéket kell, hogy kapjon,
+tehát a két \pr{szülő}s kifejezésben a \pr{Valaki}
+ugyanarra vonatkozik.
 A kérdés két tagjának sorrendje felcserélhető, tehát
 ugyanezt az eredményt adja ez is:
 \begin{query}
@@ -239,6 +243,17 @@ Fogalmazd meg Prologban!
 Készítsd el a saját családfádat (nagyszülőkig
 és unokatestvérekig)!
 \end{problem}
+
+\begin{infobox*}{}{\pr{false} = nincs több megoldás}
+A Prolog gyakran olyankor is felajánlja a
+további megoldások keresését, amikor nincs több --
+egyszerűen azért, mert még \emph{ő} sem tudja.
+Ha ezután mégiscsak kiderül, hogy nincs más
+megoldás, akkor ezt \pr{false}-szal
+jelzi. Bizonyos esetekben ez megkerülhetetlen,
+máskor az adott rendszertől függ, hogy észreveszi-e,
+hogy felesleges a további keresés.
+\end{infobox*}
 
 \subsection*{Szabályok}
 
@@ -309,8 +324,8 @@ Definiáljuk a ,,nagyszülő'' kapcsolatot!
 \begin{program}
 nagyszülő(X, Z) :- szülő(X, Y), szülő(Y, Z).
 \end{program}
-Ez pontosan követi azt, ahogy megkerestük valakinek
-a nagyszülőjét.
+Ez pontosan követi azt, ahogy korábban megkerestük
+valakinek a nagyszülőjét.
 
 \subsection*{Problémás esetek}
 
@@ -319,7 +334,7 @@ Hogyan tudnánk megadni a ,,fivér'' kapcsolatot?
 fivér(X, Y) :- férfi(X), szülő(Z, X), szülő(Z, Y).
 \end{program}
 Tehát X fivére Y-nak, ha férfi és van közös
-szülőjük.
+szülője Y-nal.
 
 Itt érdemes megjegyezni, hogy bár Abú Tálib és
 Abdulla testvérek voltak, a
@@ -353,6 +368,14 @@ Itt a \pr{\textbackslash=} jelentése ,,nem azonos''.
 illusztrálja, hogy a szabályok több sorban is
 írhatóak; ilyenkor a második és további sorokat
 beljebb szokás húzni.
+
+\begin{infobox*}{}{Többszörös megoldások}
+A ,,\pr{?- fivér(huszajn, muhszin).}'' kérdésre
+érdekes módon két \pr{true} választ kapunk.
+Ennek az az oka, hogy a fivéri kapcsolatot
+kétféleképpen is be lehet bizonyítani, Alin és
+Fátimán keresztül.
+\end{infobox*}
 
 \subsection*{Egyedüli változók}
 
@@ -423,9 +446,9 @@ Fordítsd le Prologra!
   Teszteld a saját családfádon!
 \end{problem}
 \begin{problem}
-  Csinálj egy \pr{nagybácsi} szabályt a \pr{szülő}
-  és \pr{fivér} segítségével, és keresd meg vele Ali
-  unokahúgait!
+  Írj egy \pr{nagynéni} szabályt a \pr{szülő}
+  és \pr{nővér} segítségével, és keresd meg vele
+  Zajnab unokaöccseit!
 \end{problem}
 
 \section{Rekurzió}
@@ -445,8 +468,8 @@ szabályokkal:
 ...
 \end{program}
 Ez nagyon jól működik, de véges -- bármennyi ilyen
-programsort írok, mindig tudok eggyel feljebb menni
-a családfában, és azt már nem kezeli.
+programsort írunk, mindig feljebb tudunk menni
+eggyel a családfában, és azt már nem kezeli.
 
 Egy kis trükkel meg tudjuk ezt oldani: azt mondjuk,
 hogy ha X gyereke őse Z-nek, akkor X is őse Z-nek:
@@ -458,20 +481,29 @@ Az \pr{ős} így önmagára hivatkozik, más szóval
 
 Ez így magában még azonban nem elég, mert így ahhoz,
 hogy valaki ős legyen, mindig valaki másnak is ősnek
-kéne lennie, valahol ennek meg kéne állnia. Elég
-hozzávenni a legegyszerűbb esetet, amikor a szülő az
-ős:
+kéne lennie, amit a végtelenségig kéne folytatnunk.
+Valahol ennek meg kell állnia; ehhez elég
+hozzávenni a legegyszerűbb esetet, vagyis azt,
+amikor maga a szülő az ős:
 \begin{program}
 ős(X, Z) :- szülő(X, Z).
 ős(X, Z) :- szülő(X, Y), ős(Y, Z).
 \end{program}
 Ez a kettő együtt már működik. X őse Z-nek, ha vagy
 (i) X szülője Z-nek, vagy (ii) X szülője Y-nak és Y
-őse Z-nek. Próbáljátok ki, mit ad az
+őse Z-nek.
+
+Próbáljuk is ki:
 \begin{query}
 ?- ős(X, huszajn).
+X = ali ;
+X = fátima ;
+X = abú_tálib ;
+X = abdulla ;
+X = ámna ;
+X = mohamed ;
+X = hadídzsa
 \end{query}
-kérdés!
 
 \begin{problem}
 Tegyük fel, hogy az \pr{ős} definícióját
@@ -485,11 +517,11 @@ Jó ez így? Miért?
 
 \section*{A teljes program}
 
-Itt van minden tény és szabály, amiről szó volt. A
-programban a \pr{\%} jel megjegyzések hozzáadására
-használható, a rendszer szempontjából a \pr{\%}-tól
-jobbra levő szöveg érdektelen, mintha ott se
-lenne.
+Ay alábbi programban szerepel minden tény és
+szabály, amiről szó volt. A \pr{\%} jel megjegyzések
+hozzáadására használható, a rendszer szempontjából a
+\pr{\%}-tól jobbra levő szöveg érdektelen, mintha
+ott sem lenne.\index{\pr{\%}}
 
 \begin{program}
 % szülő(X, Y) => X az Y szülője
@@ -632,7 +664,7 @@ lehetőségünk is van:
 \end{itemize}
 
 Tegyük fel, hogy szeretjük a kék színt, és nem
-akarjuk lecserélni (meg egyébként is akkor már 5
+akarjuk lecserélni (egyébként is akkor már 5
 szín kéne!), a másik két megoldás pedig nem elég
 automatikus. Mit tehetünk?
 
@@ -653,7 +685,10 @@ térkép(DE, CH, IT, PL, CZ, AT, SI, HR, SK, HU) :-
     t(DE, Tenger), t(IT, Tenger), t(PL, Tenger),
     t(SI, Tenger), t(HR, Tenger).
 \end{program}
-Így már tökéletes megoldást kapunk.
+Így már tökéletes megoldást kapunk.\index{\pr{=}}
+(Az egyenlőségjellel (\pr{=}) két kifejezést tudunk
+\emph{egyesíteni}, erről majd többet a következő
+leckében.)
 
 Megtehettük volna azt is, hogy a \pr{Tenger}ek
 helyett egyszerűen \pr{kék}et írunk, és akkor

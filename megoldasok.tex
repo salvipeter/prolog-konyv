@@ -1,11 +1,48 @@
 \chapter{A feladatok megoldásai}
-\subsubsection*{1. feladat}
+\subsection*{1.~lecke}
+\subsubsection*{1.~feladat}
+\begin{query}
+?- szülő(huszajn, X).
+false
+
+?- szülő(X, huszajn).
+X = ali ;
+X = fátima
+
+?- szülő(ámna, X), szülő(X, fátima).
+X = mohamed
+
+?- szülő(ámna, X), szülő(X, Y), szülő(Y, haszan).
+X = mohamed,
+Y = fátima
+\end{query}
+\subsubsection*{2.~feladat}
+\begin{query}
+?- szülő(X, ali).
+?- szülő(umáma, X).
+?- szülő(X, zajnab), szülő(Nagyszülő, X).
+\end{query}
+\subsubsection*{4.~feladat}
 \begin{program}
-foo(X) :- bar(X).
-bar(X) :- baz(X).
+boldog(X) :- vangyereke(X).
+kétgyerekes(X) :- szülő(X, Y), fivér(Y, _).
 \end{program}
-\subsubsection*{2. feladat}
+\subsubsection*{5.~feladat}
 \begin{program}
-foo(X) :- bar(X).
-bar(X) :- baz(X).
+unoka(X, Y) :- nagyszülő(Y, X).
 \end{program}
+\subsubsection*{6.~feladat}
+\begin{program}
+nővér(X, Y) :-
+    nő(X),
+    szülő(Z, X), szülő(Z, Y),
+    X \= Y.
+nagynéni(X, Y) :- nővér(X, Z), szülő(Z, Y).
+\end{program}
+\begin{query}
+?- nagynéni(zajnab, X), férfi(X).
+\end{query}
+\subsubsection*{7.~feladat}
+Jó a definíció; X őse Z-nek, ha (i) X szülője Z-nek, vagy (ii) X őse Z szülőjének.
+\subsection*{2.~lecke}
+\subsubsection*{1.~feladat}
