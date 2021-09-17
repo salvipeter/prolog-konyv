@@ -2,28 +2,32 @@
 % (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
 
 \chapter{Típusok és egyesítés}
-Ebben a leckében ...
-\subsection*{Típusok}
-Most, hogy már van egy első képünk a Prologról,
-ideje pontosabban megvizsgálni az alkotóelemeit.
-Egy Prolog \emph{kifejezés}\/nek négy típusa van:
-lehet atom, szám, változó vagy struktúra. A
-következőkben ezeket fogjuk közelebbről
-megnézni.\index{kifejezés}
+Az első leckében megismertük a tényeket és
+szabályokat, és kaptunk egy első képet arról, hogy
+hogyan is néz ki egy Prolog program. A következőkben
+azzal fogunk foglalkozni, hogy megvizsgáljuk az
+alapvető alkotóelemeket, valamint a programok fő
+mozgató rugóját, az \emph{egyesítést}.
+
+A Prolog \emph{kifejezés}\/eknek négy típusa van:
+atom, szám, változó vagy struktúra. Az egyes típusok
+,,helyesírására'' más és más szabályok vonatkoznak
+-- nézzük meg ezeket közelebbről!
+\index{kifejezés}\index{tipus@típus}
 \subsection*{Atomok}
-Láttuk, hogy vannak ,,konkrét dolgok'', amiket
-kisbetűvel írunk -- ezeket \emph{atom}\/oknak szokás
+Láttuk, hogy vannak ,,konkrét dolgok'', amelyeket
+kisbetűvel í\-runk. Ezeket \emph{atom}\/oknak szokás
 nevezni. Az atomok neve háromféleképpen képezhető:
 \begin{enumerate}
 \item Betűk, számok és az alsóvonás (\pr{\_})
   karakter kombinációja, de az első mindig egy
   kisbetű. Pl.: \pr{nil}, \pr{foo1}, \pr{bar\_42},
-  \pr{baz\_\_}, \pr{ez\_1\_hosszú\_név}`.
-\item Különleges karakterek (nem
-  betű/szám/alsóvonás) sorozata, pl.~\pr{.:.},
-  \pr{==>}, \pr{+}.
-\item Aposztófok közti karaktersorozat,
-  pl. \pr{'Peti'}, \pr{'Abú Tálib'}.
+  \pr{baz\_\_}, \pr{ez\_1\_hosszú\_név}.
+\item Különleges karakterek sorozata (ezekből lehet
+  válogatni: \pr{\#\$\&*+-./:<=>?{@}\^{}\~{}}),
+  pl.~\pr{.:.} vagy \pr{==>} vagy \pr{+}.
+\item Aposztrófok közti karaktersorozat,
+  pl. \pr{'Peti'} vagy \pr{'Abú Tálib'}.
 \end{enumerate}
 Az első fajtára már sok példát láttunk; a másodikról
 majd később lesz szó; a harmadikat pedig jellemzően
@@ -40,15 +44,17 @@ kell választani, ez leggyakrabban a \pr{42} (a
 és hasonló programozó-szubkultúrával kapcsolatos
 érdekességekről rengeteget lehet olvasni a \emph{Zsargon
   fájl}\/ban,\footnote[2]{http://www.catb.org/jargon/html/}
-nagyon szórakoztató olvasmány. (Sajnos csak angolul,
-de sokszor nem is igazán lehetne lefordítani.)
+nagyon szórakoztató olvasmány. (Sajnos csak angolul
+hozzáférhető, de sokszor nem is igazán lehetne
+lefordítani.)
 \index{foo--bar--baz}
 \index{zsargon fájl}
 \end{infobox}
 
 \subsection*{Számok}
 A Prolog egész és valós számokat tud kezelni, a
-megszokott jelölésekkel. A valós számoknál lehet
+megszokott jelölésekkel (de angol szokás szerint
+a tizedesvessző helyett ponttal). A valós számoknál lehet
 használni az ún.~\emph{exponenciális formát} is,
 ahol egy \pr{e} betű után a 10 kitevője szerepel,
 tehát pl.~ugyanazt a számot jelöli a \pr{1.23e5} és
@@ -132,11 +138,25 @@ háromszög(pont(1,0),pont(0,2),pont(-1,0))
 \end{query}
 lesz.
 
-A különböző aritású funktorok különbözőnek
-számítanak, pl.~lehet készíteni egy 3D
-\pr{pont(X,Y,Z)} funktort is, illetve azonos nevű,
-de eltérő aritású tények/szabályok is megférnek
-egymás mellett.
+Lehetnek azonos névvel különböző aritású funktorok,
+pl.~lehet készíteni egy 3D \pr{pont(X,Y,Z)} funktort
+is. (Hasonlóan, az eltérő aritású tények/szabályok is
+megférnek egymás mellett.)
+
+\begin{infobox*}{}{Struktúra vagy tény?}
+Fontos, hogy ne keverjük össze a tényeket és
+struktúrákat. Alakra ugyanúgy néznek ki -- és
+később látni fogjuk, hogy ez nem véletlen --, de
+mást jelent a
+\begin{verbatim}
+gyártó(swift, suzuki).
+\end{verbatim}
+tény és az \pr{autó(swift,suzuki)} kifejezés. Az
+előbbi kifejez egy kapcsolatot a modellnév és a
+gyártó között, míg az utóbbi a két adatot egy
+egységbe kapcsolja össze: az autó egy olyan dolog,
+aminek van egy modellneve és egy gyártója.
+\end{infobox*}
 
 \begin{problem}
 Milyen típusúak (atom, szám, változó, struktúra) az
