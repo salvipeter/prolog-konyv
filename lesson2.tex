@@ -155,7 +155,7 @@ tény és az \pr{autó(swift,suzuki)} kifejezés. Az
 előbbi kifejez egy kapcsolatot a modellnév és a
 gyártó között, míg az utóbbi a két adatot egy
 egységbe kapcsolja össze: az autó egy olyan dolog,
-aminek van egy modellneve és egy gyártója.
+amihez tartozik egy modellnév és egy gyártó.
 \end{infobox*}
 
 \begin{problem}
@@ -205,8 +205,8 @@ pedig azért nem, mert más a legkülső
 (\emph{elsődleges}) funktoruk.
 \index{funktor!elsődleges}
 
-Valójában a fenti egyenlőség végtelen sok más módon
-is kielégíthető, pl.
+Visszatérve az első példára, az egyenlőség végtelen
+sok más módon is kielégíthető, pl.
 \begin{query}
 Év = 1982,
 Hónap = március,
@@ -218,13 +218,13 @@ mindig a legáltalánosabbat adja.
 
 A pontos szabályok a következők:
 \begin{enumerate}
-\item Ha \pr{S} és \pr{T} \emph{konstansok} (tehát
+\item Ha $S$ és $T$ \emph{konstansok} (tehát
   atomok vagy számok), akkor csak abban az esetben
   egyesíthetőek, ha azonosak.\index{konstans}
-\item Ha \pr{S} változó, akkor a két kifejezés
-  egyesíthető, és innentől kezdve \pr{S} ,,értéke''
-  \pr{T} lesz. (Fordítva hasonlóan.)
-\item Ha \pr{S} és \pr{T} is struktúrák, akkor pontosan akkor egyesíthetőek, ha
+\item Ha $S$ változó, akkor a két kifejezés
+  egyesíthető, és innentől kezdve $S$ ,,értéke''
+  $T$ lesz. (Fordítva hasonlóan.)
+\item Ha $S$ és $T$ is struktúrák, akkor pontosan akkor egyesíthetőek, ha
   \begin{itemize}
   \item megegyezik az elsődleges (legkülső) funktoruk
   \item ugyanannyi az aritásuk
@@ -241,27 +241,29 @@ Például a
 \end{query}
 egyesítés az alábbi lépésekből áll:
 \begin{enumerate}
-\item \pr{háromszög = háromszög}
+\item Az elsődleges funktor (\pr{háromszög}) és az
+  aritás (3) megegyezik.
 \item \pr{pont(1,1) = X}
   (itt az \pr{X} megkapja a \pr{pont(1,1)} értéket)
 \item \pr{A = pont(4,Y)}
   (itt az \pr{A} megkapja a \pr{pont(4,Y)} értéket)
 \item \pr{pont(2,3) = pont(2,Z)}
   \begin{enumerate}
-    \item \pr{pont = pont}
+    \item Az elsődleges funktor (\pr{pont}) és az
+      aritás (2) megegyezik.
     \item \pr{2 = 2}
     \item \pr{3 = Z}
       (itt a \pr{Z} megkapja a \pr{3} értéket)
   \end{enumerate}
 \end{enumerate}
 
-\subsection*{Egyesítés funktoron belül}
+\subsection*{Egyesítés tényekben}
 	
-Az egyesítést ki lehet használni egy funktoron belül
-is. Egy szakasz függőlegességét pl. megadhatjuk így:
-\begin{query}
+Az egyesítést ki lehet használni egy tényen belül
+is. Egy szakasz függőlegességét megadhatjuk így:
+\begin{program}
 függőleges(szakasz(pont(X,_),pont(X,_))).
-\end{query}
+\end{program}
 
 Most feltehetünk mindenféle érdekes kérdést:
 \begin{query}

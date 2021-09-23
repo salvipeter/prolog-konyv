@@ -44,3 +44,22 @@ nagynéni(X, Y) :- nővér(X, Z), szülő(Z, Y).
 \subsubsection*{7.~feladat}
 Jó a definíció; X őse Z-nek, ha (i) X szülője Z-nek, vagy (ii) X őse Z szülőjének.
 \subsubsection*{8.~feladat}
+Változó; atom; atom; változó; atom; struktúra; szám; (hibás); struktúra; (hibás).
+\subsubsection*{9.~feladat}
+Erre a feladatra nincs \emph{egyetlenegy} jó megoldás; különböző alkalmazásokhoz
+más és más leírási módok lehetnek kényelmesebbek.
+\begin{itemize}
+\item Egy tengelyekkel párhuzamos téglalapot le lehet (pl.) írni a bal
+  felső és jobb alsó sarkával, tehát \pr{téglalap(BalFelső, JobbAlsó)},
+  ahol \pr{BalFelső} és \pr{JobbAlsó} pontok: \pr{pont(X, Y)}.  Ha a
+  téglalap a tengelyekkel nem párhuzamos, akkor a legegyszerűbb talán
+  mind a négy csúcspontot felsorolni (bár ez redundáns).
+\item Egy négyzetet mindig le lehet írni a bal felső és jobb alsó
+  sarokkal, de lehet pl.~a középponttal és egy csúcsponttal is;
+  tengelyekkel párhuzamos esetben elég a középpont és a csúcsok ettől
+  való távolsága is.
+\item Egy kört is reprezentálhat a befoglaló négyzete, de megadható a
+  középpontja és a sugara által is: \pr{kör(Középpont, Sugár)},
+  pl.~\pr{kör(pont(1,2),3)}.
+\end{itemize}
+\subsubsection*{10.~feladat}
