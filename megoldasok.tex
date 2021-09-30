@@ -1,3 +1,6 @@
+% -*- fill-column: 52 -*-
+% (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
+
 \chapter{A feladatok megoldásai}
 \subsubsection*{1.~feladat}
 \begin{query}
@@ -54,6 +57,11 @@ más és más leírási módok lehetnek kényelmesebbek.
   ahol \pr{BalFelső} és \pr{JobbAlsó} pontok: \pr{pont(X, Y)}.  Ha a
   téglalap a tengelyekkel nem párhuzamos, akkor a legegyszerűbb talán
   mind a négy csúcspontot felsorolni (bár ez redundáns).
+  Egy másik lehetőség, hogy egy irányított szakasszal és egy hosszal
+  írjuk le: \pr{téglalap( szakasz(P1,P2),Hossz)}; ez alapján a téglalap
+  úgy szerkeszthető meg, hogy a szakasz
+  lerajzolása után derékszögben balra fordulunk,
+  és onnan felmérjük a hosszt, a negyedik csúcs pedig már adódik.
 \item Egy négyzetet mindig le lehet írni a bal felső és jobb alsó
   sarokkal, de lehet pl.~a középponttal és egy csúcsponttal is;
   tengelyekkel párhuzamos esetben elég a középpont és a csúcsok ettől
@@ -63,3 +71,33 @@ más és más leírási módok lehetnek kényelmesebbek.
   pl.~\pr{kör(pont(1,2),3)}.
 \end{itemize}
 \subsubsection*{10.~feladat}
+\begin{program}
+vízszintes(szakasz(pont(_,Y),pont(_,Y))).
+\end{program}
+\begin{query}
+?- vízszintes(S), függőleges(S).
+S = szakasz(pont(_X,_Y),pont(_X,_Y)).
+\end{query}
+Tehát a ponttá degenerált szakasz ilyen.
+\subsubsection*{11.~feladat}
+Igen (\pr{A=1,B=2}); nem; nem; igen (\pr{D=2,E=2});
+nem;
+igen (\pr{P1= pont(-1,0),P2=pont(1,0),P3=pont(0,Y)}).
+\subsubsection*{12.~feladat}
+A megoldás függ a választott reprezentációtól.
+Ha a négy csúcsponttal
+írtuk le:
+\begin{program}
+tengelytéglalap(téglalap(A,B,_,_)) :-
+    függőleges(szakasz(P1,P2)).
+tengelytéglalap(téglalap(_,B,C,_)) :-
+    függőleges(szakasz(P2,P3)).
+\end{program}
+Ha az irányított szakasz és hossz megoldást
+választottuk:
+\begin{program}
+tengelytéglalap(téglalap(S,_)) :- függőleges(S).
+tengelytéglalap(téglalap(S,_)) :- vízszintes(S).
+\end{program}
+Természetesen sok más megoldás is elképzelhető.
+\subsubsection*{13.~feladat}

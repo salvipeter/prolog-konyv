@@ -238,6 +238,9 @@ Például a
 \begin{query}
 ?- háromszög(pont(1,1),A,pont(2,3)) =
    háromszög(X,pont(4,Y),pont(2,Z)).
+A = pont(4,Y),
+X = pont(1,1),
+Z = 3.
 \end{query}
 egyesítés az alábbi lépésekből áll:
 \begin{enumerate}
@@ -293,14 +296,11 @@ milyen értéke lesz a változóknak?
 \item \pr{pont(A,B) = pont(1,2)}
 \item \pr{pont(A,B) = pont(X,Y,Z)}
 \item \pr{plusz(2,2) = 4}
-\item \pr{+(2,D) = +(E,2)}
+\item \pr{2+D = E+2}
+\item \pr{f(g(X),Y) = f(Y,h(X))}
 \item \pr{háromszög(pont(-1,0),P2,P3) =}\\
   \pr{háromszög(P1,pont(1,0),(pont(0,Y))}
 \end{itemize}
-\end{problem}
-\begin{problem}
-Az előző feladat végén a háromszögek milyen
-családját írtuk le?
 \end{problem}
 \begin{problem}
 Készíts egy szabályt, ami eldönti, hogy egy téglalap
@@ -308,23 +308,23 @@ oldalai a tengelyekkel párhuzamosak-e!
 \end{problem}
 
 \section{Kétféle olvasat}
-Egy \pr{P :- Q, R.} alakú szabályt kétféleképpen
-lehet értelmezni:
+Egy $P$ \pr{:-} $Q$\pr{,} $R$\pr{.} alakú szabályt
+kétféleképpen lehet értelmezni:
 \begin{enumerate}
 \item Leíró (\emph{deklaratív}) olvasatok:
   \begin{itemize}
-    \item \pr{P} igaz akkor, ha \pr{Q} és \pr{R} igaz.
-    \item \pr{Q} és \pr{R}-ből következik \pr{P}.
+    \item $P$ igaz akkor, ha $Q$ és $R$ igaz.
+    \item $Q$ és $R$-ből következik $P$.
   \end{itemize}
   \index{olvasat!deklaratív}
 \item Működés szerinti (\emph{procedurális}) olvasatok:
   \begin{itemize}
-    \item Ahhoz, hogy megoldjuk \pr{P}-t,
-      \emph{először} megoldjuk \pr{Q}-t, és
-      \emph{aztán} megoldjuk \pr{R}-et.
-    \item Ahhoz, hogy kielégítsük \pr{P}-t,
-      \emph{először} kielégítjük \pr{Q}-t és
-      \emph{aztán} kielégítjük \pr{R}-et.
+    \item Ahhoz, hogy megoldjuk $P$-t,
+      \emph{először} megoldjuk $Q$-t, és
+      \emph{aztán} megoldjuk $R$-et.
+    \item Ahhoz, hogy kielégítsük $P$-t,
+      \emph{először} kielégítjük $Q$-t és
+      \emph{aztán} kielégítjük $R$-et.
   \end{itemize}
   \index{olvasat!procedurális}
 \end{enumerate}
@@ -336,9 +336,11 @@ A deklaratív olvasat pusztán logika. A kifejezéseket
 eddig mindig vesszővel (\pr{,}) kapcsoltuk össze,
 ami logikai \emph{és}\/t jelent. A logikai
 (megengedő) \emph{vagy}\/ot a pontosvessző (\pr{;})
-jelöli. A vesszőnek van elsőbbsége, tehát a \pr{P :-
-  Q, R; S, T.} kifejezést úgy értelmezzük, mintha
-\pr{P :- (Q, R); (S, T).} lenne. (Az elsőbbségről
+jelöli. A vesszőnek van elsőbbsége, tehát a $P$ \pr{:-}
+$Q$\pr{,} $R$\pr{;} $S$\pr{,} $T$\pr{.} kifejezést
+úgy értelmezzük, mintha
+$P$ \pr{:-} \pr{(}$Q$\pr{,} $R$\pr{);} \pr{(}$S$\pr{,} $T$\pr{).}
+lenne. (Az elsőbbségről
 még később lesz szó bővebben.)\index{\pr{;}}
 
 A pontosvessző helyett mindig írhatunk külön
@@ -351,7 +353,7 @@ szabályt írhattuk volna egy sorban is:
 \begin{program}
 ős(X, Z) :- szülő(X, Z); szülő(X, Y), ős(Y, Z).
 \end{program}
-De általában a külön szabályokba írt változat jobban
+A külön szabályokba írt változat általában jobban
 olvasható.
 
 \section{Nyomkövetés}
@@ -374,14 +376,13 @@ A kérdés pedig:
 \begin{query}
 ?- sötét(X), nagy(X).
 \end{query}
-Tehát ,,Mi az ami sötét színű és nagy?''
-
+,,Mi az ami sötét színű és nagy?''
 A megoldáshoz vezető lépések:
 \begin{enumerate}
 \item A teljesítendő célok listája \pr{sötét(X),
   nagy(X)}.
 \item Végigmegyünk a programon az elejétől kezdve,
-  hogy találunk-e a \pr{sötét(X)}-el egyesíthető
+  hogy talá\-lunk-e a \pr{sötét(X)}-el egyesíthető
   szabály-fejet (vagy tényt, hiszen a tények
   tulajdonképpen szabályok, amelyeknek a törzse
   \pr{true}). A 7-es sor az első ilyen. Az egyesítés
@@ -389,7 +390,7 @@ A megoldáshoz vezető lépések:
   helyettesítjük a szabály törzsével, az új
   cél-lista \pr{fekete(X), nagy(X)}.
 \item Végigmegyünk a programon az elejétől kezdve,
-  hogy találunk-e a \pr{fekete(X)}-el egyesíthető
+  hogy talá\-lunk-e a \pr{fekete(X)}-el egyesíthető
   szabály-fejet. Az 5-ös sor az első ilyen. Az
   egyesítés miatt \pr{X = macska}, és mivel az 5-ös
   sornak nincsen törzse, az új cél-lista
@@ -500,7 +501,7 @@ Ha most kiértékeljük a
 \end{query}
 kérdést, akkor a gép csak dolgozik és dolgozik, és
 nem áll le. (Implementációtól függően ilyenkor vagy
-van egy ,,Abort'' gomb, vagy a Ctrl-C
+van egy ,,Abort'' gomb, vagy a \keys{\ctrl+C}
 billentyűkombináció megnyomásával lehet a programot
 leállítani.) Bonyolultabb esetekben előfordulhat,
 hogy egy idő után valami olyan hibaüzenetet kapunk,
