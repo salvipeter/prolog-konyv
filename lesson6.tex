@@ -443,6 +443,101 @@ Az önmagát módosító programok megértése nehéz, ezért
 az ilyen jellegű technikákat csak jól elkülönített
 programrészekben ajánlott alkalmazni.
 
+\subsection*{Polipos játék}
+\begin{wrapfigure}{r}{.4\textwidth}
+  \centering
+  \includegraphics[width=.35\textwidth]{images/polip.png}
+\end{wrapfigure}
+A játéktáblán sorokba rendezve kidudorodó gombok találhatóak.
+A játékosok felváltva lépnek, és egy lépés során kiválasztanak egy sort,
+és abban a sorban tetszőleges számú (de legalább egy) gombot benyomnak.
+Az veszt, aki az utolsó gombot nyomja be.
+
+Írjunk programot, ami megtalálja a legjobb lépést! Ehhez először írjuk le a táblát:
+\begin{program}
+polip([3,5,2,4,5,5,3]).
+\end{program}
+A lista minden eleme az adott sorban levő gombok számának felel meg.
+Adjunk hozzá logikát is:
+\begin{program}
+nyertes([]) :- !. 
+nyertes(L) :- vesz(L, _, L1), vesztes(L1), !.
+\end{program}
+Akkor nyer az aktuális játékos, ha (i)~már nincsen benyomható gomb, vagy
+(ii)~ha tud vesztes állást előidézni.
+
+A \pr{vesz(L, I-N, L1)} reláció akkor teljesül, ha az \pr{L} állásban
+az \pr{I}-edik sorban \pr{N} gombot benyomva az \pr{L1} állás jön létre.
+A sorok számlálásához felveszünk egy második paramétert, ami 1-ről indul:
+\begin{program}
+vesz(L, V, L1) :- vesz(L, 1, V, L1).
+\end{program}
+A lépéskor három lehetőség van:
+\begin{enumerate}
+\item Elvesszük az egész első sort.
+\item Elveszünk valamennyit az első sorból (de nem az egészet).
+\item Másik sorból veszünk el.
+\end{enumerate}
+Ennek megfelel az alábbi három szabály:
+\begin{program}
+vesz([X|M], I, I-X, M).
+vesz([X|M], I, I-Y, [Y1|M]) :-
+    X1 is X - 1, között(1, X1, Y), Y1 is X1 - Y.
+vesz([X|M], I, V, [X|M1]) :-
+    I1 is I + 1, vesz(M, I1, V, M1).
+\end{program}
+
+A vesztes állás az egyszerűen a nem nyertes állás:
+\begin{program}
+vesztes(L) :- \+ nyertes(L).
+\end{program}
+
+Végül pedig nyerő lépés az, ami után vesztes állás jön létre:
+\begin{program}
+nyerő_lépés(L, V) :- vesz(L, V, X), vesztes(X), !.
+\end{program}
+
+Például a kezdőállásból egy nyerő lépést így kaphatunk meg:
+\begin{query}
+?- polip(P), nyerő_lépés(P, X).
+P = [3, 5, 2, 4, 5, 5, 3],
+X = 1-3. % Az első sorból vegyük el az összeset (3)
+\end{query}
+
+De mi köze mindennek a dinamikus szabályokhoz?
+Ha valaki kipróbálja a fenti programot, bizony elég sokat kell várnia,
+mert nagyon lassú. Fel lehetne gyorsítani azzal, ha a \pr{vesztes}
+már kiszámolt értékeit (tehát, hogy mely állások vesztesek) eltárolnánk,
+és amikor újra szükség van rájuk, akkor egyszerűen csak elő tudnánk húzni
+az eredményt a tarsolyunkból. Ezt a módszert -- a korábban kiszámolt
+eredmények eltárolását -- \emph{memoizálás}\/nak vagy \emph{táblázás}\/nak
+szokás nevezni.\index{memoizálás}\index{tablazas@táblázás}
+
+A legtöbb Prolog rendszernek van erre valamilyen beépített módszere,
+pl.~\name{SWI-Prolog}ban mindössze annyit kell írni, hogy
+\begin{program}
+:- table vesztes/1.
+\end{program}
+$\dots$ de ez nem szabványos. A dinamikus szabályok segítségével viszont
+ez nagyon könnyen megoldható:
+\begin{program}
+:- dynamic(vesztes/1). 
+vesztes(L) :-
+    \+ nyertes(L), !,
+    asserta((vesztes(L) :- !)). 
+vesztes(L) :-
+    asserta((vesztes(L) :- !, fail)),
+    fail. 
+\end{program}
+Ha egy állásról kiderül, hogy vesztes, akkor ezt, mint tényt, elrakjuk.
+Ha meg az derül ki, hogy nem, akkor egy olyan szabályt rakunk el,
+ami ezt biztosítja; ennek az utóbbi szabálynak is \pr{fail} kell a végére,
+különben a \pr{vesztes(L)} elsőre mindig igaz lenne.
+
+Így a program már nagyon gyors. Ez természetesen egy kompromisszum:
+a sebességért cserébe tárhellyel fizetünk. Ha sokkal több megjegyzendő adatunk van,
+akkor a program könnyen kifuthat a memóriából.
+
 \section{Vezérlés}
 A program folyásának vezérlésére már láttunk néhány
 módszert, mint a vágás (\pr{!}) vagy a mindig igaz

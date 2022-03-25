@@ -54,6 +54,31 @@ behelyettesít(K, [A=N|M], K2) :-
 életkor(zsófi, 5).
 életkor(juli, 2).
 
+polip([3,5,2,4,5,5,3]).
+
+nyertes([]) :- !. 
+nyertes(L) :- vesz(L, _, L1), vesztes(L1), !.
+
+:- dynamic(vesztes/1). 
+vesztes(L) :-
+    \+ nyertes(L), !,
+    asserta((vesztes(L) :- !)). 
+vesztes(L) :-
+    asserta((vesztes(L) :- !, fail)),
+    fail. 
+
+vesz(L, V, L1) :- vesz(L, 1, V, L1).
+vesz([X|M], I, I-X, M).
+vesz([X|M], I, I-Y, [Y1|M]) :- X1 is X - 1, között(1, X1, Y), Y1 is X1 - Y.
+vesz([X|M], I, V, [X|M1]) :- I1 is I + 1, vesz(M, I1, V, M1).
+
+nyerő_lépés(L, V) :- vesz(L, V, X), vesztes(X), !.
+
+között(N, M, N) :- N =< M.
+között(N, M, X) :-
+    N < M, N1 is N + 1,
+    között(N1, M, X).
+
 négyzetes :-
     repeat, read(X),
     ( X = stop, !
