@@ -194,3 +194,61 @@ kérdés megválaszolásához először meg kell válaszolni az
 ?- ős3(Y, fátima).
 \end{query}
 kérdést -- ez viszont nyilvánvalóan egy végtelen rekurzió.
+\subsubsection*{18.~feladat}
+\begin{program}
+kivesz3(X, Y) :- hozzáfűz(Y, [_,_,_], X).
+\end{program}
+\subsubsection*{19.~feladat}
+\begin{program}
+kivesz33(X, Y) :- kivesz3(X, [_,_,_|Y]).
+\end{program}
+\subsubsection*{20.~feladat}
+Hozzáfűzéssel:
+\begin{program}
+utolsó(X,Y) :- hozzáfűz(_,[Y],X).
+\end{program}
+Anélkül:
+\begin{program}
+utolsó(X, [X]). 
+utolsó(X, [_|M]) :- utolsó(X, M). 
+\end{program}
+\subsubsection*{21.~feladat}
+\begin{program}
+páros_hosszú([]). 
+páros_hosszú([_|M]) :- páratlan_hosszú(M). 
+páratlan_hosszú([_|M]) :- páros_hosszú(M). 
+\end{program}
+\subsubsection*{22.~feladat}
+\begin{program}
+fordított([], []). 
+fordított([X|M], F) :-
+    fordított(M, L), hozzáfűz(L, [X], F).
+\end{program}
+\subsubsection*{23.~feladat}
+\begin{program}
+palindróma(X) :- fordított(X, X).
+\end{program}
+\subsubsection*{24.~feladat}
+\begin{program}
+forgat([X|M], Y) :- hozzáfűz(M, [X], Y). 
+\end{program}
+\subsubsection*{25.~feladat}
+\begin{program}
+részhalmaz([], []).
+részhalmaz([X|M], [X|R]) :- részhalmaz(M, R).
+részhalmaz([_|M], R) :- részhalmaz(M, R).
+\end{program}
+\subsubsection*{26.~feladat}
+\begin{program}
+ugyanolyan_hosszú([], []). 
+ugyanolyan_hosszú([_|M], [_|N]) :-
+    ugyanolyan_hosszú(M, N). 
+\end{program}
+\subsubsection*{27.~feladat}
+\begin{program}
+lapít([], []). 
+lapít([X|M], Y) :-
+    lapít(X, X1), lapít(M, M1),
+    hozzáfűz(X1, M1, Y). 
+lapít(X, [X]) :- X \= [], X \= [_|_]. 
+\end{program}

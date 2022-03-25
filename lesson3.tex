@@ -37,12 +37,12 @@ olyat írni, hogy
 \begin{query}
 lista(a, Maradék)
 \end{query}
-ami egy tetszőleges lista, aminek az első eleme
+ami egy tetszőleges listát ír le, melynek az első eleme
 \pr{a}, vagy
 \begin{query}
 lista(a, lista(b, Maradék))
 \end{query}
-ami egy olyan tetszőleges lista, aminek az első két
+ami egy olyan lista, amelynek az első két
 eleme \pr{a} és \pr{b}.
 
 Ennek így egy szépséghibája van: az utolsó elem
@@ -110,7 +110,7 @@ pl.~\pr{[a, b, c] = [a | [b, c]] = [a, b | [c]] =
 \section{Műveletek listákon}
 
 Az alábbiakban nézzünk meg néhány hasznos műveletet,
-amiket listákra alkalmazhatunk.
+amelyeket listákra alkalmazhatunk.
 
 \subsection*{Tartalmazás}
 Az egyik legfontosabb kérdés, amit listákkal
@@ -122,7 +122,7 @@ tartalmaz(X, [_|Maradék]) :- tartalmaz(X, Maradék).
 \end{program}
 \index{\pr{tartalmaz}}
 Szavakban megfogalmazva, egy lista akkor tartalmaz
-valamit, (i) ha az az eleje, vagy (ii) ha a maradéka
+valamit, (i)~ha az az eleje, vagy (ii) ha a maradéka
 tartalmazza azt. Ezzel
 \begin{query}
 ?- tartalmaz(b, [a,b,c]).
@@ -139,20 +139,20 @@ Emellett a
 kérdésre megkapjuk az \pr{X = a}, \pr{X = b} és
 \pr{X = c} megoldásokat, sőt, meg is fordíthatjuk,
 és feltehetjük a kérdést, hogy ,,Milyen listák
-tartalmazzák \pr{a}-t?''
+tartalmazzák az \pr{a}-t?''
 \begin{query}
 ?- tartalmaz(a, L).
 \end{query}
 Erre a következő (jellegű) megoldásokat kapjuk:
 \begin{query}
-L = [a | Maradék]
-L = [X, a | Maradék]
-L = [X1, X2, a | Maradék]
-L = [X1, X2, X3, a | Maradék]
+L = [a | Maradék] ;
+L = [X, a | Maradék] ;
+L = [X1, X2, a | Maradék] ;
+L = [X1, X2, X3, a | Maradék] ;
 ...
 \end{query}
-Az első egy tetszőleges lista, aminek az első eleme
-\pr{a}; a második egy olyan, aminek a második eleme
+Az első egy tetszőleges lista, amelynek az első eleme
+\pr{a}; a második egy olyan, amelynek a második eleme
 \pr{a} és így tovább.
 
 Feltehetünk összetett kérdéseket is, pl.~milyen
@@ -161,11 +161,11 @@ háromelemű listák vannak, amelyek tartalmazzák az
 \begin{query}
 ?- L = [_, _, _], tartalmaz(a, L),
    tartalmaz(b, L), tartalmaz(c, L).
-L = [a, b, c]
-L = [a, c, b]
-L = [b, a, c]
-L = [c, a, b]
-L = [b, c, a]
+L = [a, b, c] ;
+L = [a, c, b] ;
+L = [b, a, c] ;
+L = [c, a, b] ;
+L = [b, c, a] ;
 L = [c, b, a]
 \end{query}
 
@@ -198,11 +198,11 @@ listára osztani?''
 \begin{query}
 ?- hozzáfűz(L1, L2, [a,b,c]).
 L1 = [],
-L2 = [a, b, c]
+L2 = [a, b, c] ;
 L1 = [a],
-L2 = [b, c]
+L2 = [b, c] ;
 L1 = [a, b],
-L2 = [c]
+L2 = [c] ;
 L1 = [a, b, c],
 L2 = []
 \end{query}
@@ -231,7 +231,7 @@ tartalmaz(X, L) :- hozzáfűz(_, [X|_], L).
 \end{program}
 Szavakban: egy \pr{L} lista akkor tartalmaz egy
 \pr{X} elemet, ha szétválasztható két listára,
-amiből a másodiknak az első eleme \pr{X}. (Az első
+amelyből a másodiknak az első eleme \pr{X}. (Az első
 lista ill.~a második maradéka is lehet üres.)
 
 \subsection*{Hozzáadás és törlés}
@@ -260,8 +260,8 @@ lista maradéka, amiből kitöröltük az \pr{X}-et.
 Egy példa a használatára:
 \begin{query}
 ?- töröl(a, [a,b,a,a], L).
-L = [b, a, a]
-L = [a, b, a]
+L = [b, a, a] ;
+L = [a, b, a] ;
 L = [a, b, a]
 \end{query}
 Itt a második és harmadik megoldás azonosnak tűnik,
@@ -273,9 +273,9 @@ Mi történik, ha az ,,eredeti'' listát vesszük
 ismeretlennek?
 \begin{query}
 ?- töröl(a, L, [1,2,3]).
-L = [a, 1, 2, 3]
-L = [1, a, 2, 3]
-L = [1, 2, a, 3]
+L = [a, 1, 2, 3] ;
+L = [1, a, 2, 3] ;
+L = [1, 2, a, 3] ;
 L = [1, 2, 3, a]
 \end{query}
 Ahogy látszik, a ,,Mi az a lista, amiből ha
@@ -284,7 +284,7 @@ kapunk?'' kérdés egyszerűbben úgy fogalmazható meg,
 hogy ,,Mit kapunk, ha az \pr{[1, 2, 3]} listába
 beleteszünk egy \pr{a}-t?''
 
-Ez van annyira hasznos, hogy adhatunk neki egy új
+Ez annyira hasznos, hogy adhatunk neki egy új
 nevet:
 \begin{program}
 betesz(X, L, L1) :- töröl(X, L1, L).
@@ -294,8 +294,8 @@ betesz(X, L, L1) :- töröl(X, L1, L).
 A törlés használható kiválasztásra is:
 \begin{query}
 ?- töröl(X, [a,b,c], _).
-X = a
-X = b
+X = a ;
+X = b ;
 X = c
 \end{query}
 
@@ -343,20 +343,20 @@ Szokás szerint nézzük meg, mit kapunk a
 ,,fordított'' felhasználásban:
 \begin{query}
 ?- részlista(R, [a,b,c]).
-R = []
-R = [a]
-R = [a, b]
-R = [a, b, c]
-R = []
-R = [b]
-R = [b, c]
-R = []
-R = [c]
+R = [] ;
+R = [a] ;
+R = [a, b] ;
+R = [a, b, c] ;
+R = [] ;
+R = [b] ;
+R = [b, c] ;
+R = [] ;
+R = [c] ;
 R = []
 \end{query}
 Ahogy várható volt, ezzel megkapjuk az \pr{[a,b,c]}
-lista összes részlistáját -- az üreset többször is
-(miért? Tipp: nézd meg a \pr{hozzáfűz(X, \_,
+lista összes részlistáját -- az üreset többször is.
+(Miért? Tipp: nézd meg a \pr{hozzáfűz(X, \_,
   [a,b,c])} kimenetét).
 
 \subsection*{Permutációk}
@@ -376,11 +376,11 @@ permutáció([X|M], P) :-
 \index{\pr{permutáció}}
 Tehát úgy kapjuk az első lista permutációját, hogy
 vesszük a maradék (\pr{M}) egy permutációját
-(\pr{L}), és ebbe betesszük az \pr{X}-et.
+(\pr{L}), és ebbe betesszük az első elemet (\pr{X}).
 
 Egy másik logika az lehet, hogy kiválasztunk
 (kitörlünk) egy elemet, a maradéknak vesszük egy
-permutációját, és az elejáre beszúrjuk a kitörölt
+permutációját, és az elejére beszúrjuk a kitörölt
 elemet:
 \begin{program}
 permutáció(L, [X|P]) :-
@@ -404,7 +404,7 @@ legyen, csak kicsit ki kell egészíteni, de mivel
 szimmetrikus, nincs rá igazán szükség.
 
 \begin{problem}
-Írjatok egy szabályt, amivel ki lehet venni egy
+Írj egy szabályt, amivel ki lehet venni egy
 listából az utolsó 3 elemet!
 \begin{query}
 ?- kivesz3([a,b,c,d,e], [a,b]).
@@ -412,7 +412,7 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, amivel ki lehet venni egy
+Írj egy szabályt, amivel ki lehet venni egy
 listából az első és utolsó 3 elemet!
 \begin{query}
 ?- kivesz33([a,b,c,d,e,f,g], [d]).
@@ -420,7 +420,7 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, amivel megkaphatjuk egy lista
+Írj egy szabályt, amivel megkaphatjuk egy lista
 utolsó elemét! Készítsetek két verziót, egyet
 \pr{hozzáfűz}zel, egyet anélkül!
 \begin{query}
@@ -429,13 +429,13 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjátok meg a \pr{páros\_hosszú(L)} és
+Írd meg a \pr{páros\_hosszú(L)} és
 \pr{páratlan\_hosszú(L)} szabályokat! Ezek akkor
 igazak, amikor az \pr{L} lista páros- ill.~páratlan
 számú elemből áll (nincs szükség számokra hozzá).
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, ami megállapítja, hogy két
+Írj egy szabályt, ami megállapítja, hogy két
 lista megfordítottja-e egymásnak!
 \begin{query}
 ?- fordított([a,b,c], X).
@@ -443,7 +443,7 @@ X = [c,b,a]
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, ami megállapítja, hogy egy szó
+Írj egy szabályt, ami megállapítja, hogy egy szó
 \emph{palindróma}-e, azaz visszafele is ugyanaz-e!
 \begin{query}
 ?- palindróma([g,ö,r,ö,g]).
@@ -451,7 +451,7 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, amivel egy listát eggyel
+Írj egy szabályt, amivel egy listát eggyel
 ,,elforgathatunk'' úgy, hogy az első lista első eleme
 a második végére kerül!
 \begin{query}
@@ -460,25 +460,25 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, ami a részhalmazságot
+Írj egy szabályt, ami a részhalmazságot
 vizsgálja! Le is lehessen vele generálni az összes
 részhalmazt! (A halmaz itt egy olyan rendezett
-lista, amiben minden elem egyszer fordul elő.)
+lista, amelyben minden elem egyszer fordul elő.)
 \begin{query}
 ?- részhalmaz([a, b, c], R).
-R = [a, b, c]
-R = [a, b]
-R = [a, c]
-R = [a]
-R = [b, c]
-R = [b]
-R = [c]
+R = [a, b, c] ;
+R = [a, b] ;
+R = [a, c] ;
+R = [a] ;
+R = [b, c] ;
+R = [b] ;
+R = [c] ;
 R = []
 \end{query}
 (Az eredmény lehet más sorrendben.)
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, amivel ellenőrizhető, hogy két
+Írj egy szabályt, amivel ellenőrizhető, hogy két
 lista ugyanolyan hosszú!
 \begin{query}
 ?- ugyanolyan_hosszú([1, 2, 3], [a, b, c]).
@@ -486,7 +486,7 @@ true
 \end{query}
 \end{problem}
 \begin{problem}
-Írjatok egy szabályt, amivel ki lehet ,,lapítani''
+Írj egy szabályt, amivel ki lehet ,,lapítani''
 egy listát, tehát a belső listák elemeit kiviszi a
 legkülső szintre:
 \begin{query}
@@ -570,10 +570,10 @@ választ6(A, L) :-
     részhalmaz(A, L).
 \end{program}
 
-A \pr{részhalmaz} szabály feladatként fel volt adva;
-az alábbi verzió feltételezi, hogy az elemek azonos
+A \pr{részhalmaz} szabály feladatként is szerepelt.
+Ebben feltételezzük, hogy az elemek azonos
 sorrendben fordulnak elő (tehát nincs olyan elempár,
-ami a két listában fordított sorrendben
+amely a két listában fordított sorrendben
 szerepelne). Ez a megkötés, mivel most úgy
 használjuk, hogy a részhalmaz elemei változók, azt
 vonja maga után, hogy a keletkező részhalmazban az
