@@ -101,3 +101,96 @@ tengelytéglalap(téglalap(S,_)) :- vízszintes(S).
 \end{program}
 Természetesen sok más megoldás is elképzelhető.
 \subsubsection*{13.~feladat}
+\begin{program}
+kiolvas(1, egy).
+kiolvas(2, kettő).
+kiolvas(3, három).
+\end{program}
+\subsubsection*{14.~feladat}
+\begin{query}
+?- f(s(1), A).
+A = kettő.
+\end{query}
+Csak a második szabállyal egyesíthető.
+
+\begin{query}
+?- f(s(s(1)), kettő).
+false.
+\end{query}
+Nincsen egyesíthető szabály.
+
+\begin{query}
+?- f(s(s(s(s(s(s(1)))))), C).
+C = egy.
+\end{query}
+Nézzük ezt meg lépésenként.
+Az eredeti kérdés csak a negyedik szabállyal egyesíthető;
+egyesítés után az
+\begin{query}
+?- f(s(s(s(1))), C).
+\end{query}
+kérdést kell megválaszolni, ami ismét a negyedik szabállyal
+egyesíthető, tehát:
+\begin{query}
+?- f(1, C).
+\end{query}
+Ez pedig az első szabály alapján adja az eredményt.
+
+\begin{query}
+?- f(D, három).
+D = s(s(1)) ;
+D = s(s(s(s(s(1))))) ;
+D = s(s(s(s(s(s(s(s(1)))))))) ;
+...
+\end{query}
+A harmadik szabály adja az első megoldást.
+A negyedik szabály szerint, ha
+\begin{query}
+?- f(X, három).
+\end{query}
+teljesül, akkor \pr{D = s(s(s(X)))}, ez alapján
+minden olyan \pr{D} megoldás lesz, ahol $3n+2$ db.~\pr{s}
+szerepel.
+\subsubsection*{15.~feladat}
+\begin{query}
+trace, nagy(X), sötét(X), notrace.
+Call: nagy(_5078)
+Exit: nagy(medve)
+Call: sötét(medve)
+  Call: fekete(medve)
+  Fail: fekete(medve)
+Redo: sötét(medve)
+  Call: barna(medve)
+  Exit: barna(medve)
+Exit: sötét(medve)
+X = medve 
+\end{query}
+\subsubsection*{16.~feladat}
+A nyomkövetés a \pr{fekete(X)} kielégítésétől indul.
+A \pr{notrace} hozzáadásával a nyomkövetés csak addig tart,
+amíg el nem jut a \pr{sötét} második szabályához:
+\begin{query}
+?- sötét(X), nagy(X).
+  Call: fekete(_4284)
+  Exit: fekete(macska)
+Exit: sötét(macska)
+Call: nagy(macska)
+Fail: nagy(macska)
+Redo: sötét(_4284)
+X = medve.
+\end{query}
+\subsubsection*{17.~feladat}
+Amikor további bizonyítást keresünk, a második szabály alapján
+Fátimának egy másik ősét (nem Mohamedet) fogja keresni,
+akiről aztán majd be akarja látni, hogy Abdulla gyermeke.
+
+Ekkor azonban eljutunk a második szabályhoz úgy, hogy az \pr{X}
+ismeretlen, és a szabály szerint az
+\begin{query}
+?- ős3(X, fátima).
+\end{query}
+kérdés megválaszolásához először meg kell válaszolni az
+\begin{query}
+?- ős3(Y, fátima).
+\end{query}
+kérdést -- ez viszont nyilvánvalóan egy végtelen rekurzió.

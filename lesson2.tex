@@ -331,6 +331,20 @@ kétféleképpen lehet értelmezni:
 A legfontosabb különbség az, hogy a procedurális
 olvasatokban számít a kifejezések sorrendje.
 
+Tehát például az
+\begin{program}
+ős(X, Z) :- szülő(X, Y), ős(Y, Z).
+\end{program}
+szabályt kiolvashatjuk úgy, hogy
+\begin{itemize}
+\item \pr{X} őse \pr{Z}-nek, ha \pr{X} szülője \pr{Y}-nak és \pr{Y} őse \pr{Z}-nek.
+\item Ha \pr{X} szülője \pr{Y}-nak és \pr{Y} őse \pr{Z}-nek, akkor \pr{X} őse \pr{Z}-nek.
+\item Ahhoz, bebizonyítsuk, hogy \pr{X} őse \pr{Z}-nek, először azt kell belátni, hogy
+  \pr{X} szülője \pr{Y}-nak, majd pedig azt, hogy \pr{Y} őse \pr{Z}-nek.
+\item Ahhoz, hogy találjunk egy \pr{Z}-t, amelynek \pr{X} az őse, először találjunk
+  egy \pr{Y}-t, amelynek \pr{X} a szülője, majd egy \pr{Z}-t, amelynek \pr{Y} az őse.
+\end{itemize}
+
 \subsection*{Logikai vagy}
 A deklaratív olvasat pusztán logika. A kifejezéseket
 eddig mindig vesszővel (\pr{,}) kapcsoltuk össze,
@@ -432,12 +446,33 @@ rendszer lehetővé teszi a program végigkövetését a
 
 Ez minden egyes lépést kiír; ezek a következő
 típusúak lehetnek:
-\begin{itemize}
-\item [Call] Egy új cél keresése indul
-\item [Redo] Újra próbálkozik egy másik egyesítéssel
-\item [Fail] A cél kielégítése sikertelen
-\item [Exit] A cél kielégítése sikeres
-\end{itemize}
+
+\vspace{1em}
+\begin{tabular}{l|l}
+Call & Egy új cél keresése indul \\
+Redo & Újra próbálkozik egy másik egyesítéssel \\
+Fail & A cél kielégítése sikertelen \\
+Exit & A cél kielégítése sikeres
+\end{tabular}
+\vspace{1em}
+
+A futtatás eredménye:
+\begin{query}
+?- trace, sötét(X), nagy(X), notrace.
+Call: sötét(_106)
+  Call: fekete(_106)
+  Exit: fekete(macska)
+Exit: sötét(macska)
+Call: nagy(macska)
+Fail: nagy(macska)
+Redo: sötét(_106)
+  Call: barna(_106)
+  Exit: barna(medve)
+Exit: sötét(medve)
+Call: nagy(medve)
+Exit: nagy(medve)
+X = medve.
+\end{query}
 
 \begin{problem}
 Írd újra az alábbi programot pontosvessző nélkül!
@@ -484,7 +519,7 @@ Ezután nézd meg a
 \end{query}
 kérdést! Amikor belép a nyomkövetésbe, hagyd
 továbbmenni -- mi történik? Mi a helyzet akkor, ha a
-8.~sorhoz is hozzáadod a \pr{trace}-t, és újra
+8.~sorhoz hozzáadod a \pr{notrace}-t, és újra
 kipróbálod?
 \end{problem}
 
@@ -508,9 +543,9 @@ hogy egy idő után valami olyan hibaüzenetet kapunk,
 hogy ,,stack limit exceeded'', ami lényegében azt
 jelenti, hogy a rekurzió túl mély lett.
 
-Az érdekes az, hogy egy program, ami deklaratív
+Az érdekes az, hogy egy program, amely deklaratív
 olvasatban helyes, vezethet végtelen rekurzióra
-(tehát a procedurális olvasat szerint hibás). Nézzük
+(tehát a procedurális olvasat szerint lehet hibás). Nézzük
 meg megint az \pr{ős} szabályt!
 \begin{program}
 ős(X, Z) :- szülő(X, Z).
@@ -639,11 +674,6 @@ szabályokat előre tenni (\pr{ős1} és \pr{ős3}), és a
 szabályokon belül is az egyszerűbb kifejezések
 jöjjenek előbb (\pr{ős1}).
 
-\begin{problem}
-Menjetek végig a fenti nyomkövetéseken soronként (ha
-esetleg megspóroltátok volna), és legyetek biztosak
-benne, hogy minden világos!
-\end{problem}
 \begin{problem}
 Az \pr{ős3} esetében, ha további megoldást kérünk
 (ami itt az ,,Abdulla őse Fátimának'' állítás egy
@@ -817,4 +847,4 @@ futja. Nemsokára megismerkedünk a listákkal és a
 számolással, amelyek segítségével a \pr{forgat} és a
 \pr{kapcsolódik} szabályokat egy--egy sorban meg
 lehetne oldani, és a \emph{megoldás}ban a lapok
-különbözőségét is könnyebben lehetne biztosítani.
+különbözőségét is köny-nyebben lehetne biztosítani.
