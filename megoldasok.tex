@@ -252,3 +252,58 @@ lapít([X|M], Y) :-
     hozzáfűz(X1, M1, Y). 
 lapít(X, [X]) :- X \= [], X \= [_|_]. 
 \end{program}
+\subsubsection*{28.~feladat}
+\begin{query}
+?- t(0+1, A).
+A = 1+0.
+?- t(0+1+1, B).
+B = 1+1+0
+?- t(1+0+1+1+1, C).
+C = 1+1+1+1+0
+?- t(D, 1+1+1+0).
+D = 1+1+0+1 ;
+D = 1+0+1+1 ;
+D = 0+1+1+1
+\end{query}
+\subsubsection*{29.~feladat}
+\begin{program}
+max(A, B, A) :- A >= B. 
+max(A, B, B) :- A < B. 
+\end{program}
+\subsubsection*{30.~feladat}
+\begin{program}
+maximum([X], X).
+maximum([X,Y|M], Z) :-
+    maximum([Y|M], X1), max(X, X1, Z).
+\end{program}
+\subsubsection*{31.~feladat}
+\begin{program}
+összeg([], 0). 
+összeg([X|M], N):- összeg(M, N1), N is N1 + X. 
+\end{program}
+\subsubsection*{32.~feladat}
+\begin{program}
+növekvő([_]). 
+növekvő([A,B|M]) :- A < B, növekvő([B|M]). 
+\end{program}
+\subsubsection*{33.~feladat}
+\begin{program}
+részösszeg(L, N, X) :-
+    részhalmaz(L, X), összeg(X, N).
+\end{program}
+\subsubsection*{34.~feladat}
+\begin{program}
+között(A, B, A) :- A =< B. 
+között(A, B, X) :-
+    A < B, A1 is A + 1,
+    között(A1, B, X). 
+\end{program}
+\subsubsection*{35.~feladat}
+\begin{program}
+:- op(600, xfx, :=). 
+:- op(700, xfx, egyébként). 
+:- op(800, xfx, akkor). 
+:- op(900, fx, ha). 
+ha X > Y akkor Z := V egyébként _ :- X > Y, Z = V. 
+ha X > Y akkor _ egyébként Z := V :- X =< Y, Z = V. 
+\end{program}

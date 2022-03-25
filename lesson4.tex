@@ -27,7 +27,7 @@ operátorokat:
 ... de a Prolog ezekre a megszokott infix
 jelöléseket támogatja.
 
-\begin{infobox}{}{pre-, in- és posztfix}
+\begin{infobox*}{}{pre-, in- és posztfix}
 Kizárólag prefix operátorokkal működnek a
 \emph{Lisp} nyelvcsalád nyelvei (Common Lisp,
 Scheme, Clojure, Racket etc.) Ezeknél a funktor neve
@@ -38,7 +38,7 @@ ez lesz: {\tt (+ (* 2 a) (* b c))}
 Ennek az egyik előnye a következetesség, a másik
 pedig, hogy a műveletek kiterjeszthetőek több
 argumentumra. Lispben például értelmes a {\tt (+ 1 2
-  3 4 5)} kifejezés, aminek az értéke 15.
+  3 4 5)} kifejezés, amelynek értéke 15.
 
 Kizárólag posztfix operátorokkal működnek a
 \emph{veremnyelvek}, mint pl.~a Forth vagy a
@@ -49,16 +49,16 @@ zárójelektől. A fenti példa Forthban: {\tt 2 a * b c
 
 Ezt hívják \emph{Reverse Polish Notation}-nek (RPN,
 ,,fordított lengyel jelölés''). Sok számológép is
-használja; elsőre elég furcsa, de ha az ember
-megszokta, nagyon kényelmes és gyors.
+használja; elsőre elég furcsa, de nagyon kényelmes és gyors,
+ha megszokjuk.
 \index{RPN}
-\end{infobox}
+\end{infobox*}
 
 Tetszőleges funktorból lehet operátort csinálni. Az
 egyargumentumú funktorok lehetnek pre- vagy
 posztfixek, a kétargumentumúak pedig csak
 infixek. Ahhoz, hogy egy ilyen kifejezést értelmezni
-lehessen, még azt is kell tudni, melyik operátornak
+lehessen, még azt is kell tudni, hogy melyik operátornak
 van elsőbbsége -- például a szorzást előbb kell
 elvégezni, mint az összeadást, tehát elsőbbsége van.
 \index{elsőbbség}
@@ -74,7 +74,7 @@ csak törzse. Néhány példa operátorok definíciójára
 :- op(1000, xfy, ',').
 :- op(1200, xfx, :-).
 \end{program}
-Itt az első 1 és 1200 közti szám adja meg a
+Itt az első, 1 és 1200 közti szám adja meg a
 \emph{precedenciá}\/t (minél kisebb, annál korábban
 kell elvégezni az adott műveletet), a második a
 típusát, és a harmadik magát az operátort.
@@ -113,7 +113,7 @@ Prolog különböző kifejezéseket hogyan elemez:
   \pr{y}-argumentum. Tehát az \pr{yfx} operátorokat
   {\bf balról jobbra} kell zárójelezni.
 \item A \pr{-a * (b + c * d)} kiértékelését először
-  a zárójeles résszel kell kezdeni. Ezt nem
+  a zárójeles rész-szel kell kezdeni. Ezt nem
   értelmezhetem úgy, hogy \pr{*(+(b, c), d)}, mivel
   a \pr{+} precedenciája nagyobb a \pr{*}-énál, az
   \pr{yfx} szerint pedig kisebbnek vagy egyenlőnek
@@ -133,7 +133,7 @@ Prolog különböző kifejezéseket hogyan elemez:
   \pr{a :- b :- c}, nincsen helyes zárójelezése.
 \item A negálás \pr{fy} típusú, ezért a \pr{- -a}
   kifejezés is elfogadható (a két mínuszjelet el
-  kell választani, különben egy \pr{--} nevű
+  kell választani, különben egy \pr{-{}-} nevű
   operátor lesz belőle); ha \pr{fx} típusú lenne,
   akkor ezt zárójelezni kéne \pr{-(-a)} alakban.
 \end{enumerate}
@@ -342,19 +342,19 @@ Bár Euklidész algoritmusa régi, de már sokkal
 régebben is léteztek hasonló módszerek, pl.~az ókori
 Mezopotámiában a sumérok már i.e.~2500 körül
 ismertek algoritmust az osztásra. Maga az elnevezés
-egy Bagdadban tanító VIII-IX.~századi perzsa
+egy Bagdadban tanító VIII--IX.~századi perzsa
 matematikus nevéből származik, akit (arabosan) úgy
 hívtak, hogy Muhammad bin Múszá \emph{al-Khvárizmí}
 (,,a Hvárezmből való Mózes fia Mohamed'').
 \index{al-Khvárizmí}
 
-Ha már a kezdeteknél tartunk, az első program, amit
-tényleg számítógépre írtak, Ada Lovelace (1815-1852)
-nevéhez fűződik, aki Byronnak, a híres költőnek volt
-a lánya. A program a Bernoulli-számokat számította
+Ha már a kezdeteknél tartunk, az első program, amelyet
+tényleg számítógépre írtak, Ada Lovelace (1815--1852)
+nevéhez fűződik, aki Byronnak, a híres költőnek
+a lánya volt. A program a Bernoulli-számokat számította
 ki; a gép pedig, amire írta, egy mechanikus
 számítógép volt, a \emph{Difference Engine}. Ezt
-Charles Babbage (1791-1871) tervezte, de csak
+Charles Babbage (1791--1871) tervezte, de csak
 születésének 200 éves évfordulájára készült el
 (viszont működött!).
 \index{Ada Lovelace}\index{Babbage}
@@ -392,46 +392,46 @@ hossza + \pr{C}-vel egyenlő.
 A lényeges különbséget a \pr{trace} mutatja:
 \begin{query}
 ?- trace, hossz([a, b, c], X).
-Call:hossz([a, b, c], X)
-  Call:hossz([b, c], X1)
-    Call:hossz([c], X2)
-      Call:hossz([], X3)
-      Exit:hossz([], 0)
-      Call:X2 is 1+0
-      Exit:1 is 1+0
-    Exit:hossz([c], 1)
-    Call:X1 is 1+1
-    Exit:2 is 1+1
-  Exit:hossz([b, c], 2)
-  Call:X is 1+2
-  Exit:3 is 1+2
-Exit:hossz([a, b, c], 3)
+Call: hossz([a, b, c], X)
+  Call: hossz([b, c], X1)
+    Call: hossz([c], X2)
+      Call: hossz([], X3)
+      Exit: hossz([], 0)
+      Call: X2 is 1+0
+      Exit: 1 is 1+0
+    Exit: hossz([c], 1)
+    Call: X1 is 1+1
+    Exit: 2 is 1+1
+  Exit: hossz([b, c], 2)
+  Call: X is 1+2
+  Exit: 3 is 1+2
+Exit: hossz([a, b, c], 3)
 X = 3
 
 ?- trace, hossz2([a, b, c], X).
-Call:hossz2([a, b, c], X)
-  Call:hossz2([a, b, c], 0, X)
-    Call:C1 is 0+1
-    Exit:1 is 0+1
-    Call:hossz2([b, c], 1, X)
-      Call:C2 is 1+1
-      Exit:2 is 1+1
-      Call:hossz2([c], 2, X)
-        Call:C3 is 2+1
-        Exit:3 is 2+1
-        Call:hossz2([], 3, X)
-        Exit:hossz2([], 3, 3)
-      Exit:hossz2([c], 2, 3)
-    Exit:hossz2([b, c], 1, 3)
-  Exit:hossz2([a, b, c], 0, 3)
-Exit:hossz2([a, b, c], 3)
+Call: hossz2([a, b, c], X)
+  Call: hossz2([a, b, c], 0, X)
+    Call: C1 is 0+1
+    Exit: 1 is 0+1
+    Call: hossz2([b, c], 1, X)
+      Call: C2 is 1+1
+      Exit: 2 is 1+1
+      Call: hossz2([c], 2, X)
+        Call: C3 is 2+1
+        Exit: 3 is 2+1
+        Call: hossz2([], 3, X)
+        Exit: hossz2([], 3, 3)
+      Exit: hossz2([c], 2, 3)
+    Exit: hossz2([b, c], 1, 3)
+  Exit: hossz2([a, b, c], 0, 3)
+Exit: hossz2([a, b, c], 3)
 X = 3
 \end{query}
 Az első verzióban, miután elértünk az üres listáig,
 még hozzá kell adogatnunk az 1-eket a hosszhoz. A
 második verzióban viszont ilyenkor már nincs más
 feladatunk, csak visszatérni a már kiszámolt
-eredménnyel. Ez utóbbit úgy hívják hogy
+eredménnyel. Ez utóbbit úgy hívják, hogy
 ,,vég-rekurzió'', mivel a szabálynak a legvégén van
 a rekurziós lépés. Az algoritmusok ilyen felírása
 gyakran hatékonyabb, ahogy azt mindjárt látni
@@ -481,16 +481,16 @@ Nézzük meg, mit csinál! Először beállítja \pr{K1}-et
 csökkenti az \pr{N}-et, (ii) a \pr{K1} helyére rakja
 a \pr{K2}-et, és (iii) a \pr{K2} helyére rakja a
 (régi) \pr{K1} és \pr{K2} összegét. Ez alapján
-könnyen belátható, hogy \pr{fib2(I, K1, K2, M)}-re
+könnyen belátható, hogy a \pr{fib2(I, K1, K2, M)}-re
 mindig igaz lesz, hogy az \pr{N-I+1}-edik Fibonacci
-szám a \pr{K1} lesz (\pr{I = N} esetén nyilvánvaló;
+szám a \pr{K1} lesz (\pr{I = N} esetén világos;
 a második szabály pedig nem rontja el).
 
 Így már nagy értékekre is jól működik, hiszen minden
-Fibonacci-számot csak egyszer számol ki.
+Fibo\-nacci-számot csak egyszer számol ki.
 
 \begin{problem}
-\item Írjatok szabályt, amivel két szám közül ki
+\item Írj szabályt, amivel két szám közül ki
 lehet választani a nagyobbat!
 \begin{query}
 ?- max(2, 5, X).
@@ -498,7 +498,7 @@ X = 5
 \end{query}
 \end{problem}
 \begin{problem}
-\item Írjatok szabályt, amivel egy listából ki lehet
+\item Írj szabályt, amivel egy listából ki lehet
 választani a legnagyobb elemet!
 \begin{query}
 ?- maximum([5, 2, 8, 3], X).
@@ -506,7 +506,7 @@ X = 8
 \end{query}
 \end{problem}
 \begin{problem}
-\item Írjatok szabályt, amivel ki lehet számolni egy
+\item Írj szabályt, amivel ki lehet számolni egy
 listában levő számok összegét!
 \begin{query}
 ?- összeg([5, 2, 8, 3], X).
@@ -514,7 +514,7 @@ X = 18
 \end{query}
 \end{problem}
 \begin{problem}
-\item Írjatok szabályt, ami eldönti, hogy egy lista
+\item Írj szabályt, ami eldönti, hogy egy lista
 elemei növekvő sorrendben vannak-e!
 \begin{query}
 ?- növekvő([2, 5, 6, 8]).
@@ -524,7 +524,7 @@ false
 \end{query}
 \end{problem}
 \begin{problem}
-\item Írjatok szabályt, amivel egy listából ki lehet
+\item Írj szabályt, amivel egy listából ki lehet
 választani elemeket úgy, hogy az összegük egy
 adott szám legyen!
 \begin{query}
@@ -536,7 +536,7 @@ X = [5]
 \end{query}
 \end{problem}
 \begin{problem}
-\item Írjatok egy \pr{között(N1, N2, X)} szabályt,
+\item Írj egy \pr{között(N1, N2, X)} szabályt,
 ami eldönti, hogy az \pr{X} az \pr{N1} és az
 \pr{N2} között van-e (a határokat beleértve)!
 \begin{query}
@@ -551,17 +551,14 @@ X = 3
 \end{query}
 \end{problem}
 \begin{problem}
-\item (*) Írjatok \pr{ha}, \pr{akkor},
+\item Készíts \pr{ha}, \pr{akkor},
 \pr{egyébként} és \pr{:=} operátorokat, hogy
 lehessen ilyeneket írni:
 \begin{query}
-ha X > Y akkor Z := X egyébként Z := Y
+ha X > Y akkor Z := A egyébként Z := B
 \end{query}
-Ehhez az kell, hogy a kifejezés így zárójeleződjön:
-\begin{query}
-ha(akkor(>(X, Y), egyébként(:=(Z, X), :=(Z, Y))))
-\end{query}
-Működjön az alábbi kérdés-felelet:
+Ennek hatására a \pr{Z} egyesül a \pr{A}-val vagy \pr{B}-vel
+attól függően, hogy \pr{X} nagyobb-e, mint \pr{Y}. Például:
 \begin{query}
 ?- X = 2, Y = 3,
    X2 is 2 * X, X4 is 4 * X,
@@ -574,15 +571,33 @@ W = 1
 X2 = 4
 X4 = 8
 \end{query}
+
+Prefix jelölésben ugyanez így nézne ki:
+\begin{query}
+ha(akkor(>(X, Y), egyébként(:=(Z, A), :=(Z, B))))
+\end{query}
+A szabály maga tehát nagyon egyszerű:
+\begin{program}
+ha(akkor(>(X, Y), egyébként(:=(Z, V), _))) :-
+    X > Y, Z = V.
+ha(akkor(>(X, Y), egyébként(_, :=(Z, V)))) :-
+    X =< Y, Z = V.
+\end{program}
+Itt érdemes megjegyezni, hogy a baloldalon szereplő
+\pr{>} operátornak nincsen semmilyen matematikai
+értelme, csak egy struktúra funktoraként szerepel.
+
+A feladat tehát az, hogy állítsd be úgy az
+operátorokat, hogy a fenti példa működjön.
 \end{problem}
 
 \section{Projekt: Kígyó-kocka}
-Oldjuk meg a jól ismert ,,kígyó-kocka'' feladványt:
 
 \begin{center}
-\includegraphics[width=.8\textwidth]{images/snake-cube.jpg}
+\includegraphics[width=.6\textwidth]{images/snake-cube.jpg}
 \end{center}
 
+Oldjuk meg a jól ismert ,,kígyó-kocka'' feladványt!
 Az egyes kis szakaszok fixek, de a derékszögű
 fordulásoknál egymáson elforgathatóak; a feladat,
 hogy kirakjunk belőle egy 3x3-as kockát.
@@ -602,10 +617,10 @@ pozíció(p(X, Y, Z)) :-
     méret(N), között(1, N, X),
     között(1, N, Y), között(1, N, Z).
 \end{program}
-Tehát a jelenlegi 3x3-as kocka esetében minden
+Tehát a jelenlegi $3\times3$-as kocka esetében minden
 koordináta 1 és 3 között változhat.
 
-A \pr{között} szabály feladatként volt bevezetve,
+A \pr{között} szabály feladatként szerepelt,
 így definiálhatjuk:
 \begin{program}
 között(N, M, N) :- N =< M.
@@ -649,7 +664,7 @@ lépés(p(X,Y,Z), i(z,I), p(X,Y,Z1)) :- Z1 is Z + I.
 (Ezért volt jó a pozitív/negatív irányt 1-el és
 -1-el jelölni.)
 
-Próbáljuk meg felírni a megoldást! Legyen a
+Próbáljuk meg felírni a megoldást! Legyen erre a
 szabályunk \pr{megoldás(K, PL, I, X)}; itt \pr{K} a
 kígyó hátralevő része, \pr{PL} a már kitöltött
 pozíciók listája (az elején a kígyó feje, amit épp
@@ -694,9 +709,9 @@ teendőnk, és \pr{PL1 = PL}. Egyébként teszünk a
 megadott irányban egy lépést, megnézzük, hogy
 érvényes pozíció-e, nem szerepel-e az eddigi
 pozíciók listájában, és ha ez mind jó, akkor jöhet a
-többi lépés (aminél a \pr{PL}-et kiegészítjük az új
+többi lépés -- ehhez a \pr{PL}-et kiegészítjük az új
 \pr{P1} pozícióval, és a készítendő szakasz hosszát
-csökkentjük 1-el).
+csökkentjük 1-el.
 
 Ha a kígyó több szakaszból áll, akkor először
 ellépünk az első szakasz hosszával az aktuális
@@ -753,8 +768,8 @@ definícióját:
 \begin{program}
 kígyó([3,3,2,3,2,3,2,2,2,3,3,3,2,3,3,3]).
 \end{program}
-Egy másik variáns a ,,king'' feladvány, aminél
-4x4-es kockát kell építeni:
+Egy másik variáns a ,,king'' feladvány, amelynél
+$4\times4$-es kockát kell építeni:
 \begin{program}
 méret(4).
 kígyó([3,2,3,2,2,4,2,3,2,3,2,3,2,2,2,2,
@@ -766,7 +781,7 @@ ezért kell neki pár perc.
 
 Megfordíthatjuk a kérdést: hogyan lehet egy
 számsorozatot készíteni, ami olyan kígyót határoz
-meg, amiből kocka készíthető? Ehhez a \pr{kígyó}-nak
+meg, amelyből kocka készíthető? Ehhez a \pr{kígyó}-nak
 egy új definíciójára lesz szükségünk:
 \begin{program}
 kígyó(K) :-
@@ -808,11 +823,10 @@ FX = [le, jobbra, fel, hátra, le, balra, fel, előre,
 (Ez jó sokáig tart.) Mivel a szakaszok számával
 alulról felfele próbálkozunk, az első megoldás a
 legkevesebb szakaszból álló kígyó (15 db), amit
-3x3-as kockába lehet rendezni. Ha a fenti
+$3\times3$-as kockába lehet rendezni. Ha a fenti
 definícióban a \pr{között(N1, N3, H)} helyett \pr{H
   = 15}-öt írunk (tehát ha lerögzítjük a szegmensek
-számát), akkor egész gyorsan lefut, még a netes
-verzióban is megy.
+számát), akkor gyorsan lefut.
 
 A futási idő mindig egy kompromisszum: (aránylag)
 keveset kellett gondolkodnunk ahhoz, hogy megírjuk
