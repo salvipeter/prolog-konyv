@@ -72,7 +72,7 @@ hatásfokú: ha a lista $n$ hosszú, akkor kb.~$n^2$
 A gyorsrendezésnél kiválasztunk egy tetszőleges
 elemet (pl.~az elsőt), és a többit két részre
 osztjuk aszerint, hogy nagyobb-e ennél vagy
-sem. Ezután a két részt külön-külön rendezzük
+sem. Ezután a két részt külön--külön rendezzük
 (rekurzívan), majd az eredmény ezek összefűzéséből
 adódik:
 \index{rendezés!gyors}
@@ -156,7 +156,7 @@ rendez3(X, Y) :-
 \pr{összefésül} utolsó két szabálya közt is van
 átfedés.) Nincs valami jobb mód erre?
 
-\begin{infobox}{}{furcsa rendezések}
+\begin{infobox*}{}{furcsa rendezések}
 Rendezési algoritmusokból nincs hiány. Bizonyítható,
 hogy a gyorsrendezés, a fésülő rendezés (és még sok
 másik) a lehető leghatékonyabb\dots kivéve egy-két
@@ -176,7 +176,7 @@ furcsa módszert:
   permutáció pont a helyes sorbarendezés volt.
 \end{enumerate}
 \index{rendezés!spagetti}\index{rendezés!véletlen}
-\end{infobox}      
+\end{infobox*}      
 
 \section{Vágás}
 Egy szabály törzsében \emph{vágást} eszközölhetünk a
@@ -263,7 +263,7 @@ max2(X, Y, X) :- X >= Y, !.
 max2(X, Y, Y) :- X < Y.
 \end{program}
 
-Felmerül akkor, hogy a második szabályban szükség
+Felmerül azonban ekkor, hogy a második szabályban szükség
 van-e egyáltalán az \pr{X < Y} összehasonlításra,
 hiszen csak akkor juthatunk oda, ha az \pr{X >= Y}
 nem teljesült. A program akkor is működni látszik,
@@ -304,7 +304,7 @@ Egy további példaként nézzük meg az alábbi szabályt:
 
 \begin{program}
 % hozzáad(+X, +Halmaz, -Eredmény).
-% Hozzáadja \pr{X}-et a \pr{Halmaz} listához,
+% Hozzáadja X-et a Halmaz listához,
 % de csak akkor, ha az még nem tartalmazta.
 hozzáad(X, L, L) :- tartalmaz(X, L), !.
 hozzáad(X, L, [X|L]).
@@ -321,7 +321,7 @@ argumentum nem változó:
 ?- hozzáad(b, [a,b], [b,a,b]).
 true
 \end{query}
-Ezt elkerülendő, érdemes a dokumentációval
+Ezt elkerülendő, érdemes a dokumentációval\index{dokumentáció}
 egyértelművé tenni a használatot. A fenti programhoz
 tartozó megjegyzés is ilyen szellemben íródott. Az
 első sorában egy egyezményes jelölésrendszert
@@ -358,7 +358,7 @@ Mit lesz az összes válasz az alábbi kérdésekre:
 \end{query}
 \end{problem}
 \begin{problem}
-Írjátok át hatékonyabbra a \pr{szétoszt} szabályt
+Írd át hatékonyabbra a \pr{szétoszt} szabályt
 vágások segítségével!
 \end{problem}
 
