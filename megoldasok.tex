@@ -309,9 +309,135 @@ ha X > Y akkor _ egyébként Z := V :- X =< Y, Z = V.
 \end{program}
 \subsubsection*{36.~feladat}
 \begin{query}
-
+?- p(X).
+X = 1 ;
+X = 2
+?- p(X), p(Y).
+X = 1, Y = 1 ;
+X = 1, Y = 2 ;
+X = 2, Y = 1 ;
+X = 2, Y = 2
+?- p(X), !, p(Y).
+X = 1, Y = 1 ;
+X = 1, Y = 2
 \end{query}
 \subsubsection*{37.~feladat}
 \begin{program}
-
+szétoszt(_, [], [], []) :- !. 
+szétoszt(X, [Y|M], K, [Y|N]) :-
+    X =< Y, !, szétoszt(X, M, K, N). 
+szétoszt(X, [Y|M], [Y|K], N) :-
+    X > Y, !, szétoszt(X, M, K, N). 
 \end{program}
+\subsubsection*{38.~feladat}
+\begin{query}
+?- tartalmaz(X, Jelöltek),
+   \+ tartalmaz(X, Kiesettek).
+\end{query}
+\subsubsection*{39.~feladat}
+\begin{program}
+különbség([], _, []). 
+különbség([X|M], Y, Z) :-
+    tartalmaz(X, Y), !, különbség(M, Y, Z). 
+különbség([X|M], Y, [X|Z]) :- különbség(M, Y, Z).
+\end{program}
+\subsubsection*{40.~feladat}
+\begin{program}
+egyesíthető([], _, []) :- !. 
+egyesíthető([X|M], Y, L) :-
+    \+(X = Y), !, egyesíthető(M, Y, L). 
+egyesíthető([X|M], Y, [X|L]) :-
+    egyesíthető(M, Y, L). 
+\end{program}
+Ha tagadás nélkül ellenőriznénk az egyesíthetőséget,
+akkor el is végezné az egyesítést:
+\begin{program}
+egyesíthető_rossz([], _, []) :- !. 
+egyesíthető_rossz([X|M], Y, [X|L]) :-
+    X = Y, !, egyesíthető_rossz(M, Y, L). 
+egyesíthető_rossz([X|M], Y, L) :-
+    egyesíthető_rossz(M, Y, L). 
+\end{program}
+\begin{query}
+?- egyesíthető_rossz([X,b,t(Y)], t(a), L).
+X = t(a),
+Y = a,
+L = [t(a), t(a)].
+\end{query}
+\subsubsection*{41.~feladat}
+\begin{program}
+katamino(M, Ak) :-
+    hossz(Ak, H), N is H * 5 // M,
+    H * 5 =:= N * M,
+    kirak(N-M, Ak, X), kiír(N-M, X).
+
+kirak(N-M, Ak, X) :- kirak(Ak, N-M, [], X).
+
+kirak([], _, T, T).
+kirak(Ak, N-M, T, X) :-
+    első_lyuk(N-M, T, P),
+    töröl(A, Ak, Ak1),
+    letesz(A, P, N-M, T, T1),
+    kirak(Ak1, N-M, T1, X).
+
+első_lyuk(N-M, T, X-Y) :-
+    között(1, N, X), között(1, M, Y),
+    \+ tartalmaz(h(X-Y,_), T), !.
+
+letesz(A, X-Y, N-M, T, T1) :-
+    alakzat(A, [_-Dy|Dk]),
+    Y1 is Y - Dy, Y1 > 0,
+    letesz(A, X-Y1, Dk, N-M, [h(X-Y,A)|T], T1).
+
+letesz(_, _, [], _, T, T).
+letesz(A, X-Y, [Dx-Dy|Dk], N-M, T, T1) :-
+    X1 is X + Dx, között(1, N, X1),
+    Y1 is Y + Dy, között(1, M, Y1),
+    \+ tartalmaz(h(X1-Y1,_), T),
+    letesz(A, X-Y, Dk, N-M, [h(X1-Y1,A)|T], T1).
+
+kiír(N-M, T) :- kiír(N-M, 1-M, T).
+
+kiír(_, _-0, _).
+kiír(N-M, X-Y, T) :-
+    Y =< M, X > N, Y1 is Y - 1, nl,
+    kiír(N-M, 1-Y1, T).
+kiír(N-M, X-Y, T) :-
+    Y =< M, X =< N,
+    tartalmaz(h(X-Y,A), T),
+    write(A), write(' '),
+    X1 is X + 1,
+    kiír(N-M, X1-Y, T).
+\end{program}
+(A program további része változatlan.)
+\begin{query}
+?- katamino(3, [k,p,c,w,l,y,i,r,v,z,+,t]).
+c c + i i i i i k k k r t w y y y y z v 
+c + + + p p l k k r r r t w w y z z z v 
+c c + p p p l l l l r t t t w w z v v v 
+true 
+
+?- katamino(4, [k,p,c,w,l,y,i,r,v,z,+,t]).
+p p z v v v c c c w w t t t y 
+p p z z z v c r c + w w t y y 
+p k k k z v r r + + + w t l y 
+k k i i i i i r r + l l l l y 
+true 
+
+?- katamino(5, [k,p,c,w,l,y,i,r,v,z,+,t]).
+c c c r l l l l y y y y 
+c k c r r w t l + y z z 
+k k r r w w t + + + z v 
+k p p w w t t t + z z v 
+k p p p i i i i i v v v 
+true 
+
+?- katamino(6, [k,p,c,w,l,y,i,r,v,z,+,t]).
+p p y y y y z v v v 
+p p l l y + z z z v 
+p k l w + + + r z v 
+k k l w w + r r r t 
+k c l c w w r t t t 
+k c c c i i i i i t 
+true 
+\end{query}

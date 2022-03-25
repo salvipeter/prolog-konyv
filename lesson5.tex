@@ -403,6 +403,9 @@ szereti(csilla, X) :- állat(X), nem(pók(X)).
 Itt a \pr{P} értéke a \pr{pók(X)} struktúra, és a
 \pr{nem} törzsében levő \pr{P} kiértékelésekor ezt
 mint megoldandó célkifejezést értelmezi.
+(A szabvány szerint elvileg \pr{call(P)}-t kellene írni,\index{\pr{call}}
+de a legtöbb Prolog rendszerben a \pr{P} is elegendő,
+erről bővebben lesz még szó a következő fejezetben.)
 
 \subsection*{A ,,zárt világ'' feltétel}
 A tagadásnak ez a módja nem mindig intuitív. Egy így
@@ -442,12 +445,12 @@ szereti(csilla, X) :- állat(X), \+ pók(X).
 \begin{problem}
 Milyen kérdéssel lehet a \pr{Jelöltek} listából
 kiválasztani azokat, akik nem szerepelnek a
-\pr{Kiesettek} listában? Használjátok a
+\pr{Kiesettek} listában? Használd a
 \pr{tartalmaz} szabályt és a tagadást!
 \end{problem}
 \begin{problem}
-Készítsetek szabályt, ami két halmaz különbségét
-képzi! (A halmaz itt egy olyan lista, amiben minden
+Készíts szabályt, ami két halmaz különbségét
+képzi! (A halmaz itt egy olyan lista, amelyben minden
 elem egyszer fordul elő.)
 \begin{query}
 ?- különbség([a,b,c,d], [f,d,b,e], X).
@@ -455,14 +458,14 @@ X = [a, c]
 \end{query}
 \end{problem}
 \begin{problem}
-Készítsetek szabályt, ami kiválogatja egy listából
+Készíts szabályt, ami kiválogatja egy listából
 azokat a kifejezéseket, amelyek egy adott másik
 kifejezéssel egyesíthetőek!
 \begin{query}
 ?- egyesíthető([X,b,t(Y)], t(a), L).
 L = [X, t(Y)]
 \end{query}
-Figyeljetek arra, hogy az \pr{X} és \pr{Y} ne kapjon
+Figyelj arra, hogy az \pr{X} és \pr{Y} ne kapjon
 ezáltal értéket!
 \end{problem}
 
@@ -470,7 +473,7 @@ ezáltal értéket!
 Készítsünk megoldót a Katamino-feladványokhoz!
 
 \begin{center}
-\includegraphics[width=\textwidth]{images/katamino.jpg}
+\includegraphics[width=.8\textwidth]{images/katamino.jpg}
 \end{center}
 
 A feladat mindig az, hogy a 12 pentominó egy adott
@@ -546,7 +549,7 @@ Ehhez megkeresi az első lyukat, majd kiválaszt
 a lyukat, és rekurzívan folytatja a műveletet, amíg
 mindent le nem rak.
 
-A tábla állapotát egy listában tároljuk, aminek az
+A tábla állapotát egy listában tároljuk, amelynek az
 elemei \pr{h(X-Y,A)} alakban adják meg, hogy az
 \pr{X-Y} pozíción az \pr{A} alakzat egy darabja
 található. Az első lyuk megkeresése így nagyon
@@ -557,7 +560,7 @@ első_lyuk(N, T, X-Y) :-
     \+ tartalmaz(h(X-Y,_), T), !.
 \end{program}
 
-Visszatérve az \pr{első\_lyuk}-ra, ez deklaratív
+Ez deklaratív
 olvasatban azt mondja, hogy az \pr{X-Y} koordináták
 a megfelelő keretek között vannak, és a tábla ezen a
 pozíción nem tartalmaz elemet. Mitől fogja ez az
@@ -602,8 +605,8 @@ letesz(A, X-Y, [Dx-Dy|Dk], N, T, T1) :-
     letesz(A, X-Y, Dk, N, [h(X1-Y1,A)|T], T1).
 \end{program}
 Ez plusz argumentumként megkapja a kiválasztott
-forgatáshoz tartozó pontokat is (az első kivételéve,
-amivel a lyukat fedtük), és ezeken megy végig
+forgatáshoz tartozó pontokat is (az első kivételével,
+amellyel a lyukat fedtük), és ezeken megy végig
 rekurzívan. Minden lépésben a (módosított) \pr{X-Y}
 koordináta alapján kiszámolja, hogy hova kerül a
 pont, és ellenőrzi, hogy értelmes-e a koordináta és
@@ -656,7 +659,7 @@ kiír(N, X-Y, T) :-
     kiír(N, X1-Y, T).
 \end{program}
 A 2-argumentumú változat csak átadja a feladatot a
-3-argumentumúnak, ami megkapja az éppen kiírandó
+3-ar\-gu\-men\-tu\-mú\-nak, ami megkapja az éppen kiírandó
 elem \pr{X-Y} koordinátáját is. Ennek három szabálya
 van:
 \begin{enumerate}
@@ -698,15 +701,15 @@ true
 \begin{problem}
 A Katamino szabályai szerint a kirakandó téglalap
 magassága mindig 5. Oldjuk fel ezt a korlátot!
-Írjátok át a programot úgy, hogy a \pr{katamino}
+Írd át a programot úgy, hogy a \pr{katamino}
 szabály paraméterben kapja meg a magasságot is, és
 ennek megfelelő megoldást keressen! A program vegye
 észre rögtön, ha a magasság nem illik a megkapott
 alakzatok számához (pl.~10 alakzat és 7-es
-magasság). Keressetek megoldást a $3\times20$,
+magasság). Keress megoldást a $3\times20$,
 $4\times15$, $5\times12$, $6\times10$ téglalapok
 kitöltésére! (Tipp: a szabályokban az eddigi \pr{N}
-paramétert cseréljétek \pr{N-M} párra.)
+paramétert cseréld \pr{N-M} párra.)
 \end{problem}
 
 \subsection*{A teljes program}
