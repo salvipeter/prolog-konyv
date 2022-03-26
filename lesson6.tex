@@ -1631,7 +1631,7 @@ különbségek:
   feltétel.
 \item Ha lehet, muszáj olyat lépnünk, hogy az
   ellenfél oldalán maradjon kő. Ha nem lehet, akkor
-  a maradék köveket megkapjuk.
+  a maradék köveket megkapjuk, mint a kalahban.
 \end{itemize}
 \end{problem}
 \begin{problem}
@@ -1691,7 +1691,8 @@ lép([L|M], Állás, Állás2) :-
 
 megfordít(tábla(La,Na,Lb,Nb), tábla(Lb,Nb,La,Na)).
 
-kövek(I, tábla(L,_,_,_), K) :- n_edik(I, L, K), K > 0.
+kövek(I, tábla(L,_,_,_), K) :-
+    n_edik(I, L, K), K > 0.
 
 vet(Kövek, Luk, Állás, Állás2) :-
     vet_saját(Kövek, Luk, Állás, Állás1, Kövek1),

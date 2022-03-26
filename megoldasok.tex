@@ -521,22 +521,225 @@ számol_és_töröl(X, [Y|Yk], N, [Y|Zk]) :-
 \begin{program}
 bagof(C, részhalmaz(X, C), L).
 \end{program}
-\subsubsection*{46.~feladat}
+\subsubsection*{46.~feladat\footnote{Varga Csilla megoldása.}}
+Elég az alábbi szabályokat megváltoztatni.
 \begin{program}
+% A második szabály egy új kiértékel/3 szabályt hív
+játék(Állás, Játékos) :-
+    játék_vége(Állás, Játékos, Eredmény), !,
+    bejelent(Eredmény).
+játék(Állás, Játékos) :-
+    lépést_választ(Állás, Játékos, Lépés),
+    kiértékel(Lépés, Állás, Játékos).
 
+kiértékel(kilépés, _, _) :-
+    kiír('Viszlát!').
+kiértékel(Lépés, Állás, Játékos) :-
+    érvényes(Lépés), !,
+    lép(Lépés, Állás, Állás1),
+    következő_játékos(Játékos, Játékos1), !,
+    kirajzol(Állás1, Játékos1),
+    játék(Állás1, Játékos1).
+kiértékel(_, Állás, Játékos) :-
+    kiír('Érvénytelen lépés. Próbáld újra!'),
+    játék(Állás, Játékos).
+
+% Itt nincs szükség az érvényesség ellenőrzésére
+% (a lépés_választ/3 másik szabálya változatlan).
+lépést_választ(_, ember, Lépés) :-
+    nl, kiír('Melyiket választod?'),
+    read(Lépés).
 \end{program}
-\subsubsection*{47.~feladat}
+\subsubsection*{47.~feladat\footnote{Varga Csilla megoldása.}}
+A trükk az, hogy az érvényesség ellenőrzése helyett
+ténylegesen elvégezzük a lépést, és ha sikerül,
+akkor jó, ha nem, akkor hibás.
+A változtatások az előző feladathoz képest
+értendők; csak a \pr{kiértékel/3} második szabálya
+módosult.
 \begin{program}
-
+kiértékel(Lépés, Állás, Játékos) :-
+    lépés(Állás, Lépés), !,
+    lép(Lépés, Állás, Állás1), 
+    következő_játékos(Játékos, Játékos1), !,
+    kirajzol(Állás1, Játékos1),
+    játék(Állás1, Játékos1).
 \end{program}
-\subsubsection*{48.~feladat}
-\begin{program}
+\subsubsection*{48.~feladat\footnote{Varga Csilla megoldása alapján.}}
+Itt a legtöbb problémát annak a kezelése okozza,
+hogy a kezdő lyukat az esetleges visszatérő vetés
+során ki kell hagyni. Ennek érdekében megváltoztatjuk
+a reprezentációt, és sorszámozzuk a lyukakat.
 
+Szintén érdekes annak a biztosítása, hogy ha lehet,
+akkor hagyjunk követ az ellenfél oldalán. Ehhez
+megvizsgálunk minden lépéslehetőséget, és csak akkor
+hagyunk meg olyanokat, amelyek nem hagynak követ
+az ellenfélnek, ha nincsen más.
+
+A változtatások az előző feladathoz képest értendők.
+\begin{program}
+kövek_száma(4).
+
+% A lyukak meg vannak sorszámozva.
+alapbeállítás(Állás, ember) :-
+    kövek_száma(K),
+    Állás = tábla([1-K,2-K,3-K,4-K,5-K,6-K],0,
+                  [1-K,2-K,3-K,4-K,5-K,6-K],0).
+
+% Hozzáad/levesz sorszámokat.
+sorszámoz([K1,K2,K3,K4,K5,K6],
+          [1-K1,2-K2,3-K3,4-K4,5-K5,6-K6]).
+
+% Kezeli a sorszámokat.
+kövek(I, tábla(L,_,_,_), K) :-
+    n_edik(I, L, _-K), K > 0.
+
+% A táblákból ki kell venni a sorszámokat
+% kirajzolás előtt.
+kirajzol(tábla(La,Na,Lb,Nb)) :-
+    nl,
+    sorszámoz(La1, La),
+    fordított(La1, F),
+    sort_ír(F),
+    kalahot_ír(Na, Nb),
+    sorszámoz(Lb1, Lb),
+    sort_ír(Lb1).
+
+% Figyel arra, hogy csak akkor hagyja üresen az
+% ellenfél térfelét, ha nem tehet mást.
+lépés(Állás, X) :-
+   findall(L, lehetőség(Állás, L), Lépések),
+   szétválaszt(Lépések, Üres, Nemüres),
+   ( Nemüres = [] -> tartalmaz(X-_, Üres)
+   ; tartalmaz(X-_, Nemüres)
+   ).
+
+% Megfelel a régi lépés/2 szabálynak,
+% de nincsen sosem a lépésnek folytatása,
+% és nincsen szükség az üres tábla esetre sem.
+lehetőség(Állás, L-Állás1) :-
+    tartalmaz(L, [1,2,3,4,5,6]),
+    kövek(L, Állás, _),
+    lép(L, Állás, Állás1).
+
+% Különválogatja azokat a lépéseket, amelyek
+% üresen hagyják az ellenfél térfelét azoktól,
+% amelyek nem.
+szétválaszt([], [], []).
+szétválaszt([L-A|M], [L-A|Üres], Nemüres) :-
+    A = tábla(_,_,Lb,_), sorszámoz(Lb1, Lb),
+    üres(Lb1), !,
+    szétválaszt(M, Üres, Nemüres).
+szétválaszt([L-A|M], Üres, [L-A|Nemüres]) :-
+    szétválaszt(M, Üres, Nemüres).
+
+% A lépés nem lista, mert nincsen ismételt lépés.
+lép(L, Állás, Állás2) :- 
+    kövek(L, Állás, K),
+    vet(K, L, L, Állás, tábla(La,Na,Lb,Nb)),
+    söpör(tábla(La,Na,Lb,Nb), tábla(La1,Na1,Lb,Nb)),
+    megfordít(tábla(La1,Na1,Lb,Nb), Állás2).  
+
+% Ha kiürült az ellenfél oldala, minden a miénk.
+söpör(tábla(La,Na,Lb,Nb), tábla(Lb,Na1,Lb,Nb)) :-
+    sorszámoz(Lb1, Lb),
+    üres(Lb1), !,
+    sorszámoz(La1, La),
+    összeg(La1, X),
+    Na1 is Na + X.
+söpör(Y, Y).
+
+% A kiinduló lyukat (KLuk) is megkapja,
+% hogy azt ki tudjuk hagyni.
+vet(Kövek, Luk, KLuk, Állás, Állás2) :-
+    vet_saját(Kövek, Luk, KLuk, Állás,
+              Állás1, Kövek1),
+    vet_ellenfél(Kövek1, KLuk, Állás1, Állás2).
+
+% Amikor már nem először vetünk a saját oldalon,
+% akkor a kihagyott kezdő lyuk miatt
+% eggyel kevesebb kő kell.
+vet_saját(Kövek, Luk, KLuk, tábla(La,Na,Lb,Nb),
+          tábla(La1,Na,Lb,Nb), Kövek1) :-
+    ( Luk = KLuk -> N = 6 ; N = 5 ),
+    Kövek > N - Luk, !,
+    felvesz_és_szór(Luk, KLuk, Kövek, La, La1),
+    Kövek1 is Kövek + Luk - N.
+vet_saját(Kövek, Luk, KLuk, tábla(La,Na,Lb,Nb),
+          tábla(La1,Na,Lb,Nb), 0) :-
+    felvesz_és_szór(Luk, KLuk, Kövek, La, La1).
+
+% Lényegében változatlan, csak kezeli a sorszámokat,
+% és átadja a kiindulási lukat a szór/4 szabálynak.
+felvesz_és_szór(0, KLuk, K, L, L1) :-
+    !, szór(K, KLuk, L, L1).
+felvesz_és_szór(1, KLuk, K, [X-_|M], [X-0|M1]) :-
+    !, szór(K, KLuk, M, M1).
+felvesz_és_szór(Luk, KLuk, K, [L|M], [L|M1]) :-
+    Luk > 1, !, Luk1 is Luk - 1,
+    felvesz_és_szór(Luk1, KLuk, K, M, M1).
+
+% Figyel arra, hogy kihagyja a kiinduló lukat.
+szór(0, _, L, L) :- !.
+szór(N, KLuk, [X-L|M], [X-L|M1]) :-
+    N > 0, X = KLuk, !,
+    szór(N, KLuk, M, M1).
+szór(N, KLuk, [X-L|M], [X-L1|M1]) :-
+    N > 0, X \= KLuk, !,
+    N1 is N - 1, L1 is L + 1,
+    szór(N1, KLuk, M, M1).
+szór(_, _, [], []) :- !.
+
+% Ha az ellenfél oldalán fejeződik be a vetés,
+% akkor ellenőrzi, hogy elfogunk-e köveket.
+vet_ellenfél(0, _, Állás, Állás) :- !.
+vet_ellenfél(Kövek, _, tábla(La,Na,Lb,Nb),
+             tábla(La, Na2, Lb2, Nb)) :-
+    1 =< Kövek, Kövek =< 6,
+    szór_ellenfél(Kövek, Lb, Lb1),
+    elfog(Kövek, Lb1, Na, Lb2, Na2).
+vet_ellenfél(Kövek, KLuk,
+             tábla(La,Na,Lb,Nb), Állás) :-
+    Kövek > 6, !, Kövek1 is Kövek - 6,
+    szór_ellenfél(6, Lb, Lb1),
+    vet(Kövek1, 0, KLuk, tábla(La,Na,Lb1,Nb), Állás).
+
+% Ez megegyezik a régi szór/3 szabállyal,
+% csak kezeli a sorszámokat is.
+szór_ellenfél(0, L, L) :- !.  
+szór_ellenfél(N, [X-L|M], [X-L1|M1]) :-
+    N > 0, !,
+    N1 is N - 1, L1 is L + 1,
+    szór_ellenfél(N1, M, M1).
+szór_ellenfél(_, [], []) :- !.
+
+% Megfordítja az ellenfél köveinek listáját,
+% hogy könnyen végig lehessen menni rajta
+% rekurzióval, majd a végén a módosult listát
+% visszafordítja.
+elfog(Kövek, Lb1, Na, Lb2, Na2) :-
+    fordított(Lb1, Lb1f),
+    fog(Kövek, Lb1f, Na, Lb2f, Na2),
+    fordított(Lb2f, Lb2).
+
+% Megkeresi a lyukat, ahová az utolsó kő esett,
+% és ha ez nem 2 vagy 3, akkor nem történik semmi.
+% Egyébként a saját kalahjába teszi, és megy tovább
+% a lyukakon (visszafelé, mert a lyukak listája meg
+% lett fordítva).
+fog(_, [], Na, [], Na) :- !.
+fog(Kövek, [N-X|M], Na, [N-X|M1], Na2) :-
+    N > Kövek, !, fog(Kövek, M, Na, M1, Na2).
+fog(Kövek, [N-X|M], Na, [N-X|M], Na) :-
+    N = Kövek, ( X < 2 ; X > 3 ), !.
+fog(Kövek, [N-X|M], Na, [N-0|M1], Na2) :-
+    N = Kövek, ( X =:= 2 ; X =:= 3 ),
+    Na1 is Na + X, Kövek1 is Kövek - 1,
+    fog(Kövek1, M, Na1, M1, Na2).
 \end{program}
 \subsubsection*{49.~feladat}
-\begin{program}
-
-\end{program}
+(Megoldás nélkül.)
 \subsubsection*{50.~feladat}
 \begin{program}
 
