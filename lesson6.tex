@@ -668,7 +668,7 @@ játék(Állás, Játékos) :-
 
 Az \pr{alapbeállítás} felállítja a tábla kezdő
 állapotát, és meghatározza a kezdő játékost. Ezt
-kirajzoljuk, és utána kezdődik a tényleges
+az állást kirajzoljuk, és utána kezdődik a tényleges
 \pr{játék/2}. Ez először ellenőrzi, hogy vége van-e
 a játéknak, és ha igen, közli az
 eredményt. Egyébként a soron következő játékos
@@ -714,7 +714,7 @@ listájával lehet definiálni.
 
 Az állást tehát a $2\times6$ lyukban, valamint a
 kalahokban levő kövek számával tudjuk leírni. A
-belső ábrázolásunk \pr{tábla(La,Na,Lb,Nb)} alakú
+belső ábrázolásunk \pr{tábla(La, Na,Lb,Nb)} alakú
 lesz, ahol \pr{La} és \pr{Lb} számok 6-elemű listája
 (a lyukakban levő kövek), \pr{Na} és \pr{Nb} sima
 számok (a kalahokban levő kövek). Az \pr{a}-végűek
@@ -774,7 +774,8 @@ lép([L|M], Állás, Állás2) :-
 Itt a \pr{kövek} megadja, hogy egy adott lyukban
 hány kő van:
 \begin{program}
-kövek(I, tábla(L,_,_,_), K) :- n_edik(I, L, K), K > 0.
+kövek(I, tábla(L,_,_,_), K) :-
+    n_edik(I, L, K), K > 0.
 
 n_edik(N, [_|M], X) :-
     N > 1, !, N1 is N - 1,
@@ -936,8 +937,7 @@ első eleme megmarad, a maradékot pedig rekurzív
 hívással tudjuk megadni.
 
 A szórásnál lyukanként haladunk, és mindegyikbe egy
-kerül, amíg vagy nincs több lyuk, vagy nincs több
-kő:
+kő kerül, amíg vagy nincs több lyuk, vagy nincs több kő:
 \begin{program}
 szór(0, L, L) :- !.
 szór(N, [L|M], [L1|M1]) :-
@@ -954,7 +954,7 @@ esetet különböztetünk meg:
   teendő.
 \item A kövek száma 1 és 6 között van (tehát nem jön
   vissza hozzánk), és a mi térfelünk nem
-  üres. Ilyenkor egyszerűn végig kell szórni ezeket
+  üres. Ilyenkor egyszerűen végig kell szórni ezeket
   a köveket.
 \item A kövek száma 1 és 6 között van, és a saját
   térfél üres. Ilyenkor az ellenfél kalahjába
@@ -1152,11 +1152,11 @@ Nyertél, gratulálok!
 A számítógép az ún.~\emph{alfa--béta nyírás}
 algoritmusa szerint fog működni. Ennek a lényege az,
 hogy minden játékálláshoz tudunk rendelni egy
-számot, ami minél magasabb, annál kedvezőbb
-nekünk. Ezután végiggondoljuk az összes lépési
+számot, ami annál magasabb, minél kedvezőbb
+nekünk az állás. Ezután végiggondoljuk az összes lépési
 lehetőséget (az ellenfél lépéseit is természetesen)
-valahány lépésre előre, ezt a lépésszámot szokás
-\emph{mélységnek} nevezni; a programban az
+valahány lépésre előre: ezt a lépésszámot szokás
+\emph{mélységnek} nevezni, a programban az
 \emph{előrelátás} rövidítéseként az \pr{E} betűt
 fogjuk rá alkalmazni.
 \index{alfa--béta nyírás}
@@ -1507,6 +1507,7 @@ Melyiket választod?
 Melyiket választod?
 |: [2].
 
+
      2    0    0    0    4    4
 4                                  1
      1    0    9    9    7    7
@@ -1605,25 +1606,36 @@ Nyertem.
 \end{query}
 
 \begin{problem}
-Írjátok át a játékos lépését, hogy hibás lépés
+Írd át a játékos lépését, hogy hibás lépés
 esetén kérdezzen újra, és \pr{kilépés}-re lépjen ki!
 \end{problem}
 \begin{problem}
-Készítsetek szigorúbb ellenőrzést az emberi játékos
+Készíts szigorúbb ellenőrzést az emberi játékos
 lépéseihez, ami (i) nem enged üres lyukat
 választani, és (ii) akkor és csak akkor enged több
 lépést, ha az utolsó kő a kalahba kerül!
 \end{problem}
-\begin{problem} (*)
-Írjátok át a programot úgy, hogy a bonyolultabb (de
+\begin{problem}
+Írd át a programot úgy, hogy a bonyolultabb (de
 izgalmasabb) Oware játék szabályait kövesse!  A
 különbségek:
 \begin{itemize}
-\item Blabla  
+\item A kövek száma általában lyukanként 4
+\item A szórásnál a kalahokat és a kezdő lyukat ki kell hagyni
+\item Követ úgy lehet szerezni, hogy ha olyan helyre
+  érkezünk, ami (i) az ellenfél oldalán van és (ii)
+  a szórás befejeztével 2 vagy 3 kő lesz benne.  Ha
+  ez teljesül, akkor az ebben levő összes követ
+  megkapjuk, sőt, ha az előzőre is teljesül, akkor
+  az abban levőket is és így tovább, amíg igaz a két
+  feltétel.
+\item Ha lehet, muszáj olyat lépnünk, hogy az
+  ellenfél oldalán maradjon kő. Ha nem lehet, akkor
+  a maradék köveket megkapjuk.
 \end{itemize}
 \end{problem}
-\begin{problem} (**)
-Írjatok dámajátékot! A játék kerete legyen ugyanaz,
+\begin{problem}
+Írj dámajátékot! A játék kerete legyen ugyanaz,
 és a számítógép használja a fenti alfa--béta nyírás
 algoritmust.
 \end{problem}
