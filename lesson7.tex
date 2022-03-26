@@ -2,7 +2,7 @@
 % (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
 \chapter{Mélyvíz}
 Most, hogy már tisztában vagyunk a Prolog
-alapjaival, nézzük meg, hogy hogy néz ki egy
+alapjaival, nézzük meg, hogy hogyan néz ki egy
 ,,igazi'' Prolog program: az asszociációs struktúrát
 megvalósító könyvtár \name{SWI-Prolog}ban.
 
@@ -23,7 +23,7 @@ szerint később ki akarjuk majd keresni őket. Az a
 feltételezés, hogy különböző adatokhoz mindig
 különböző kulcs tartozik. Ilyen kulcs lehet pl. egy
 bankban a számlaszám, amihez a megfelelő számla
-adatait rendelik. A kulcs-érték párokat tároló
+adatait rendelik. A kulcs--érték párokat tároló
 adatstruktúrákat gyakran nevezik \emph{szótáraknak}
 is, hiszen egy szótárban (enciklopédiában stb.) is
 egy-egy címszóhoz vannak rendelve a
@@ -125,7 +125,7 @@ Itt a fa \emph{gyökere} a 8, belső \emph{csúcsok} a
 13. Amikor egy csúcsból csak egy ág megy tovább
 (pl.~10, 14), olyankor is az ág vagy balra, vagy
 jobbra megy. Egy ilyen fát könnyen le tudunk írni
-Prologban, például egy \pr{fa} struktúrával, aminek
+Prologban, például egy \pr{fa} struktúrával, amelynek
 az első argumentuma a kulcs, a második és harmadik
 pedig a bal- és jobboldali ág (a nem létező ágakat
 jelölje mondjuk a \pr{-}):
@@ -370,7 +370,7 @@ kategóriájának:
   legfeljebb egyszer teljesül, pl.~\pr{maximum(+L,
     -M)} [üres listára sikertelen]
 \item \emph{multi} (többszörös): legalább egyszer
-  teljesül, pl.~\pr{permutáció(+L, -P)}
+  teljesül, ilyen pl.~a \pr{permutáció(+L, -P)}
 \item \emph{nondet} (nemdeterminisztikus): többször
   teljesülhet, de lehet sikertelen is,
   pl.~\pr{tartalmaz(?E, ?L)}
@@ -819,7 +819,7 @@ A 4-es beszúrása után a 6-os \pr{<} típusú lesz, a
 3-as \pr{>} típusú, de probléma csak a legfelső
 szinten jelentkezik, ahol a 8-as már eleve \pr{<}
 típusú volt. Itt tehát az egész fára fog meghívódni
-a forgató \pr{rebalance} operáció, aminek az
+a forgató \pr{rebalance} operáció, melynek
 eredménye jobboldalt látszik.
 
 \begin{program*}
@@ -1104,7 +1104,8 @@ szabályokkal kezelhető:
 \item \pr{üres\_sor(?Sor)} [semidet]
 \item \pr{sorba\_tesz(+Sor, +Prioritás, ?Elem, -Sor1)} [det]
 \item \pr{maximum\_elem(+Sor, ?Elem)} [semidet]
-\item \pr{maximumot\_kivesz(+Sor, -Prioritás, ?Elem, -Sor1)} [semidet]
+\item \pr{maximumot\_kivesz(+Sor, -Prioritás, ?Elem, -Sor1)}
+  \begin{sloppypar}[semidet]\end{sloppypar}
 \end{itemize}
 A kényelmes használat kedvéért még érdemes
 listából/listává átváltó szabáyokat is készíteni
