@@ -57,7 +57,7 @@ eletkor(juli, 2).
 polip([3,5,2,4,5,5,3]).
 
 nyertes([]) :- !. 
-nyertes(L) :- vesz(L, _, L1), vesztes(L1), !.
+nyertes(L) :- nyom(L, _, L1), vesztes(L1), !.
 
 :- dynamic(vesztes/1). 
 vesztes(L) :-
@@ -67,12 +67,12 @@ vesztes(L) :-
     asserta((vesztes(L) :- !, fail)),
     fail. 
 
-vesz(L, V, L1) :- vesz(L, 1, V, L1).
-vesz([X|M], I, I-X, M).
-vesz([X|M], I, I-Y, [Y1|M]) :- X1 is X - 1, kozott(1, X1, Y), Y1 is X1 - Y.
-vesz([X|M], I, V, [X|M1]) :- I1 is I + 1, vesz(M, I1, V, M1).
+nyom(L, V, L1) :- nyom(L, 1, V, L1).
+nyom([X|M], I, I-X, M).
+nyom([X|M], I, I-Y, [Y1|M]) :- X1 is X - 1, kozott(1, X1, Y), Y1 is X1 - Y.
+nyom([X|M], I, V, [X|M1]) :- I1 is I + 1, nyom(M, I1, V, M1).
 
-nyero_lepes(L, V) :- vesz(L, V, X), vesztes(X), !.
+nyero_lepes(L, V) :- nyom(L, V, X), vesztes(X), !.
 
 kozott(N, M, N) :- N =< M.
 kozott(N, M, X) :-

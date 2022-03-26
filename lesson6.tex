@@ -1,11 +1,13 @@
 % -*- fill-column: 52 -*-
 % (local-set-key (kbd "C-c C-f") 'display-fill-column-indicator-mode)
-\chapter{Haladó technikák}
-Ebben a leckében ...
+\chapter{Haladó eszközök}
+Ebben a leckében meg fogunk vizsgálni néhány olyan technikát,
+amelyekkel a programok hatékonyabbá vagy egyszerűbbé tehetőek,
+illetve szó lesz néhány fontos beépített szabályról is.
 
 \section{Különbség-listák}
 Listákat lehet két lista különbségeként ábrázolni,
-így pl.~az \pr{[1,2,3]} lista leírható úgy, mint az
+így pl.~leírható az \pr{[1,2,3]} lista úgy, mint az
 \pr{[1,2,3,8]} és \pr{[8]} listák különbsége, vagy
 az \pr{[1,2,3]} és \pr{[]} listáké, vagy általánosan
 az \pr{[1,2,3|M]} és \pr{M} különbségeként. A két
@@ -22,7 +24,7 @@ Egy egyszerű példa erre a hozzáfűzés:
 \begin{program}
 hozzáfűz_kl(X-Y, Y-Z, X-Z).
 \end{program}
-Ehhez persze az kell, hogy argumentumként
+Ehhez persze az kell, hogy a szabály argumentumként
 különbség-listákat kapjon:
 \begin{query}
 ?- hozzáfűz_kl([a,b,c|M]-M, [1,2]-[], L-[]).
@@ -123,12 +125,12 @@ vég-rekurziós változat harmadik és második
 paraméterét összevontuk egy különbség-listává.
 
 \begin{problem}
-Írjátok át a 3.~lecke feladatai közt szereplő
+Írd át a 3.~lecke feladatai közt szereplő
 \pr{lapít} szabályt hatékonyabbra különbség-listák
 használatával!
 \end{problem}
 \begin{problem}
-Oldjátok meg Dijkstra \emph{holland zászló}
+Oldd meg Dijkstra \emph{holland zászló}
 problémáját: piros, fehér és kék színű elemek
 listáját rendezzétek át úgy, hogy a piros elemek
 után jöjjenek a fehérek, és végül a kékek, de ezen
@@ -139,7 +141,7 @@ belül a sorrendjük ne változzon! Például:
 X = [piros(alma), piros(paprika), fehér(fal),
      fehér(holló), kék(tenger)]
 \end{query}
-A megoldáshoz használjatok különbség-listákat!
+A megoldáshoz használj különbség-listákat!
 \end{problem}
 
 \begin{infobox}{}{Dijkstra}
@@ -196,14 +198,14 @@ Ezeknek a segítségével a struktúrákat tudjuk fix
 hosszú \emph{tömbökként} kezelni, tehát olyan
 adattárolókként, amelyeknek tetszőleges eleme
 hatékonyan elérhető (ellentétben a listákkal, ahol
-az $n$-edik elem eléréséhez előbb végig kell mennünk
+egy elem eléréséhez előbb végig kell mennünk
 az összes előtte levőn).\index{tomb@tömb}
 Például a
 \begin{query}
 ?- functor(T, t, 10), arg(5, T, 42)
 \end{query}
 hatására a \pr{T} egy olyan 10-elemű tömb lesz,
-aminek az 5.~eleme a 42.
+amelynek az 5.~eleme a 42.
 
 \subsection*{Csere}
 Hogyan lehetne ezek segítségével megoldani a
@@ -253,7 +255,7 @@ Ennek segítségével készíthetünk függvénykiértékelőt:
 ?- kiértékel(x*sin((x+y)/2), [x=1,y=2.14], X).
 X = 0.9999996829318346
 \end{query}
-A második argumentumban \pr{Szimbólum = szám}
+A második argumentumban \pr{szimbólum = szám}
 alakban vannak megadva a helyettesítési értékek.
 \begin{program}
 kiértékel(K, L, X) :-
@@ -266,10 +268,11 @@ behelyettesít(K, [A=N|M], K2) :-
 \end{program}
 
 \begin{problem}
-(*) Írjatok szabályt, ami egy összeadásokat
-  tartalmazó kifejezést egyszerűsít úgy, hogy az
-  ismeretleneket (ha lehet) összevonja és előre
-  rakja, a többi összeadást pedig elvégzi!
+Írj szabályt, ami egy összeadásokat
+tartalmazó kifejezést egyszerűsít úgy, hogy az
+ismeretleneket (ha lehet) összevonja és előre
+rakja, a többi összeadást pedig elvégzi!
+(Vigyázat, ez egy elég komplex feladat!)
 \begin{query}
 ?- egyszerűsít(1+1+a, E).
 E = a+2
@@ -278,20 +281,6 @@ E = a+b+c+7
 ?- egyszerűsít(3+x+x, E).
 E = 2*x+3
 \end{query}
-\end{problem}
-\begin{problem}
-(*) Írjatok szabályt, ami eldönti, hogy egy
-  kifejezés általánosabb-e egy másiknál!
-\begin{query}
-?- általánosabb(X, c).
-true
-?- általánosabb(g(X), g(t(Y))).
-true
-?- általánosabb(f(X,X), f(a,b)).
-false
-\end{query}
-(Feltehetjük, hogy a két kifejezés nem tartalmazza
-ugyanazt a változót.)
 \end{problem}
 
 \section{Magasabb rendű szabályok}
@@ -325,8 +314,8 @@ listákból veszi ki.
 Gyakran előfordul, hogy az összes megoldásra
 kíváncsiak vagyunk. Ilyenkor ezeket egy listában le
 lehet kérni a \pr{bagof} (,,zsákja''), \pr{setof}
-(,,halmaza'') vagy \pr{findall} (,,összeset
-keresd'') segítségével. Nézzük meg sorban őket!
+(,,halmaza'') vagy \pr{findall} (,,találd meg az
+összeset'') segítségével. Nézzük meg sorban őket!
 
 A \pr{bagof(X, P, L)} megkeresi az összes olyan
 \pr{X}-et, amire \pr{P} igaz, és \pr{L} ezeknek a
@@ -382,7 +371,7 @@ L = [lica, mimi, dusa, zsófi, juli]
 \end{query}
 
 \begin{problem}
-Írjatok szabályt, ami a \pr{bagof} segítségével
+Írj szabályt, ami a \pr{bagof} segítségével
 megkeresi egy halmaz (lista) összes részhalmazát!
 \end{problem}
 
@@ -417,7 +406,7 @@ Ezek segítségével például definiálhatjuk magunk is a
 \begin{program}
 összes(X, Cél, L) :-
     Cél, assertz(tároló(X)), fail
-    ; assertz(tároló(nincs_több)), összegyűjt(L).
+  ; assertz(tároló(nincs_több)), összegyűjt(L).
 
 összegyűjt(L) :-
     retract(tároló(X)), !,
@@ -444,9 +433,11 @@ az ilyen jellegű technikákat csak jól elkülönített
 programrészekben ajánlott alkalmazni.
 
 \subsection*{Polipos játék}
-\begin{wrapfigure}{r}{.4\textwidth}
+
+\begin{wrapfigure}[7]{r}{.35\textwidth}
   \centering
-  \includegraphics[width=.35\textwidth]{images/polip.png}
+  \vspace{-4em}
+  \includegraphics[width=.33\textwidth]{images/polip.png}
 \end{wrapfigure}
 A játéktáblán sorokba rendezve kidudorodó gombok találhatóak.
 A játékosok felváltva lépnek, és egy lépés során kiválasztanak egy sort,
@@ -461,30 +452,30 @@ A lista minden eleme az adott sorban levő gombok számának felel meg.
 Adjunk hozzá logikát is:
 \begin{program}
 nyertes([]) :- !. 
-nyertes(L) :- vesz(L, _, L1), vesztes(L1), !.
+nyertes(L) :- nyom(L, _, L1), vesztes(L1), !.
 \end{program}
 Akkor nyer az aktuális játékos, ha (i)~már nincsen benyomható gomb, vagy
 (ii)~ha tud vesztes állást előidézni.
 
-A \pr{vesz(L, I-N, L1)} reláció akkor teljesül, ha az \pr{L} állásban
+A \pr{nyom(L, I-N, L1)} reláció akkor teljesül, ha az \pr{L} állásban
 az \pr{I}-edik sorban \pr{N} gombot benyomva az \pr{L1} állás jön létre.
 A sorok számlálásához felveszünk egy második paramétert, ami 1-ről indul:
 \begin{program}
-vesz(L, V, L1) :- vesz(L, 1, V, L1).
+nyom(L, V, L1) :- nyom(L, 1, V, L1).
 \end{program}
 A lépéskor három lehetőség van:
 \begin{enumerate}
-\item Elvesszük az egész első sort.
-\item Elveszünk valamennyit az első sorból (de nem az egészet).
-\item Másik sorból veszünk el.
+\item Benyomjuk az egész első sort.
+\item Benyomunk valamennyit az első sorból (de nem mindet).
+\item Másik sorban nyomunk.
 \end{enumerate}
 Ennek megfelel az alábbi három szabály:
 \begin{program}
-vesz([X|M], I, I-X, M).
-vesz([X|M], I, I-Y, [Y1|M]) :-
+nyom([X|M], I, I-X, M).
+nyom([X|M], I, I-Y, [Y1|M]) :-
     X1 is X - 1, között(1, X1, Y), Y1 is X1 - Y.
-vesz([X|M], I, V, [X|M1]) :-
-    I1 is I + 1, vesz(M, I1, V, M1).
+nyom([X|M], I, V, [X|M1]) :-
+    I1 is I + 1, nyom(M, I1, V, M1).
 \end{program}
 
 A vesztes állás az egyszerűen a nem nyertes állás:
@@ -494,14 +485,14 @@ vesztes(L) :- \+ nyertes(L).
 
 Végül pedig nyerő lépés az, ami után vesztes állás jön létre:
 \begin{program}
-nyerő_lépés(L, V) :- vesz(L, V, X), vesztes(X), !.
+nyerő_lépés(L, V) :- nyom(L, V, X), vesztes(X), !.
 \end{program}
 
 Például a kezdőállásból egy nyerő lépést így kaphatunk meg:
 \begin{query}
 ?- polip(P), nyerő_lépés(P, X).
 P = [3, 5, 2, 4, 5, 5, 3],
-X = 1-3. % Az első sorból vegyük el az összeset (3)
+X = 1-3. % Az első sorban nyomjuk be az összeset (3)
 \end{query}
 
 De mi köze mindennek a dinamikus szabályokhoz?
@@ -541,8 +532,8 @@ akkor a program könnyen kifuthat a memóriából.
 \section{Vezérlés}
 A program folyásának vezérlésére már láttunk néhány
 módszert, mint a vágás (\pr{!}) vagy a mindig igaz
-ill. hamis célok (\pr{true}, \pr{false} /
-\pr{fail}). Itt van néhány további:
+ill. hamis célok (\pr{true}, \pr{false} ill.~\pr{fail}).
+Itt van néhány további:
 \begin{enumerate}
 \item Ha egy szabály több megoldást is vissza tud
   adni, de mi csak az elsőt szeretnénk, a vágással
@@ -556,7 +547,9 @@ once(P) :- P, !.
 \item Amikor egy \pr{P} változót célként használunk,
   mint a \pr{once} vagy a tagadás definíciójában,
   akkor valójában a háttérben a \pr{call(P)}
-  (,,hív'') hívódik meg; ezt időnként ki is írják,
+  (,,hív'') hívódik meg; a szabvány szerint ezt ki is kéne írni,
+  de a legtöbb implementációban elhagyható. Ennek ellenére
+  érdemes lehet kiírni,
   hogy egyértelműbb legyen, mi történik. Amikor a
   \pr{call}-nak több argumentuma van, ezeket a
   célhoz kapcsolandó további paraméterekként

@@ -441,3 +441,83 @@ k c l c w w r t t t
 k c c c i i i i i t 
 true 
 \end{query}
+\subsubsection*{42.~feladat}
+\begin{program}
+lapít(X, Y) :- lapít_kl(X, Y-[]).
+
+lapít_kl([], Y-Y).
+lapít_kl([X|M], Y-A) :-
+    lapít_kl(M, A1-A), lapít_kl(X, Y-A1).
+lapít_kl(X, [X|A]-A) :- X \= [], X \= [_|_].
+\end{program}
+\subsubsection*{43.~feladat}
+\begin{program}
+holland(X, PFK) :- holland_kl(X, PFK-FK, FK-K, K-[]).
+
+holland_kl([], P-P, F-F, K-K). 
+holland_kl([piros(X)|M], [piros(X)|P]-P1, F, K) :-
+    holland_kl(M, P-P1, F, K). 
+holland_kl([fehér(X)|M], P, [fehér(X)|F]-F1, K) :-
+    holland_kl(M, P, F-F1, K). 
+holland_kl([kék(X)|M], P, F, [kék(X)|K]-K1) :-
+    holland_kl(M, P, F, K-K1). 
+\end{program}
+\subsubsection*{44.~feladat}
+A programban a \pr{k}-végű változónevek listákat
+jelölnek, például \pr{Xk} (,,\pr{X}-ek'').%
+\footnote{Angolul erre az \pr{s} végződést
+használják.}
+\begin{program}
+egyszerűsít(Kifejezés, Megoldás) :-
+    változók(Kifejezés, Változók, Konstansok),
+    számol(Változók, Számolt),
+    összeg(Konstansok, N),
+    felépít(Számolt, N, Megoldás).
+
+összeg([], 0).
+összeg([X|Xk], N):- összeg(Xk, N1), N is N1 + X.
+
+felépít([], N, N) :- !.
+felépít(Számolt, N, Megoldás) :-
+    felépít(Számolt, Érték),
+    ( N =:= 0, !, Megoldás = Érték
+    ; N =\= 0, Megoldás = Érték + N
+    ).
+
+% Felépíti a kifejezés szimbolikus részét
+felépít([v(X,1)], X) :- !.
+felépít([v(X,K)], K*X) :- K > 1, !.
+felépít([V1,V2|Vk], E2+E1) :-
+    felépít([V1], E1),
+    felépít([V2|Vk], E2).
+
+% változók(+Kifejezés, -Változók, -Konstansok)
+%   Szétválogatja a változókat és konstansokat.
+változók(X, [X], []) :- atom(X), !.
+változók(X, [], [X]) :- number(X), !.
+változók(Xk+X, [X|Vk], Kk) :-
+    atom(X), !, változók(Xk, Vk, Kk).
+változók(Xk+X, Vk, [X|Kk]) :-
+    number(X), változók(Xk, Vk, Kk).
+
+% Megszámolja a változók előfordulásait,
+% pl. [a,a,b,a,c,b] => [v(a,3),v(b,2),v(c,1)]
+számol([], []).
+számol([X|Xk], [v(X,N)|Zk]) :-
+    számol_és_töröl(X, Xk, N, Yk),
+    számol(Yk, Zk).
+
+% számol_és_töröl(+X, +L, -N, -L1)
+%   Megszámolja az X előfordulásait L-ben (N),
+%   és kitörli őket, ennek eredménye az L1.
+számol_és_töröl(_, [], 1, []) :- !.
+számol_és_töröl(X, [X|Yk], N, Zk) :-
+    !, számol_és_töröl(X, Yk, N1, Zk),
+    N is N1 + 1.
+számol_és_töröl(X, [Y|Yk], N, [Y|Zk]) :-
+    X \= Y, számol_és_töröl(X, Yk, N, Zk).
+\end{program}
+\subsubsection*{45.~feladat}
+\begin{program}
+bagof(C, részhalmaz(X, C), L).
+\end{program}

@@ -315,7 +315,7 @@ true
 ?- részlista([c,e], [a,b,c,d,e,f]).
 false
 \end{query}
-\index{\pr{részlista}}
+\index{\pr{reszlista}@\pr{részlista}}
 
 Ahogy a második példából látszik, itt a ,,részét''
 nem úgy értelmezzük, hogy az első lista minden
@@ -584,7 +584,7 @@ részhalmaz([], []).
 részhalmaz([X|M], [X|R]) :- részhalmaz(M, R).
 részhalmaz([_|M], R) :- részhalmaz(M, R).
 \end{program}
-\index{\pr{részhalmaz}}
+\index{\pr{reszhalmaz}@\pr{részhalmaz}}
 Az üres halmaznak csak az üres halmaz a
 részhalmaza. Egyébként úgy kapunk meg egy
 részhalmazt, hogy az első elemet (\pr{X}) vagy
